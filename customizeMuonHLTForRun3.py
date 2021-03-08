@@ -30,7 +30,7 @@ def customizeMuonHLTForRun3All(process, newProcessName = "MYHLT"):
         if hasattr(mod, 'L3TrajBuilderParameters'):
             if hasattr(mod.L3TrajBuilderParameters, 'tkTrajLabel'):
                 if mod.L3TrajBuilderParameters.tkTrajLabel == cms.InputTag( "hltIter3IterL3MuonMerged" ):
-                    mod.L3TrajBuilderParameters.tkTrajLabel == cms.InputTag( "hltIter2IterL3MuonMerged" )
+                    mod.L3TrajBuilderParameters.tkTrajLabel = cms.InputTag( "hltIter2IterL3MuonMerged" )
 
     # process.hltIterL3MuonMerged and process.hltIterL3MuonAndMuonFromL1Merged
     for mod in producers_by_type(process, 'TrackListMerger'):
