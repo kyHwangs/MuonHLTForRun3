@@ -1,7 +1,7 @@
 
 # CMS Run 3 Muon HLT
 
-## CMSSW_11_2_0 without Patatrack
+## CMSSW_11_2_0 (without Patatrack)
 
 ### Setup
 ```shell
@@ -28,7 +28,7 @@ git cms-merge-topic panoskatsoulis:fix_empty_bmtf_ntuples
 
 # Customizer for Muon HLT
 git cms-addpkg HLTrigger/Configuration
-git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
 
 scram b -j 8
 ```
@@ -51,6 +51,9 @@ cmsDriver.py hlt_muon \
 --mc --conditions=112X_mcRun3_2021_realistic_v15 \
 --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulMCFromRAW \
 --customise=L1Trigger/Configuration/customiseSettings.L1TSettingsToCaloParams_2018_v1_4 \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForGEM \
 --filein=/store/mc/Run3Winter20DRMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-RAW/DRFlatPU30to80_110X_mcRun3_2021_realistic_v6-v2/230001/4A5403D5-F9A2-204D-ADA3-ABF92F6AA673.root \
 -n 100 --no_output --no_exec
 ```
@@ -84,11 +87,15 @@ cmsDriver.py hlt_muon \
 --data --conditions=auto:run3_data_GRun \
 --customise=HLTrigger/Configuration/customizeHLTforCMSSW.customisePixelGainForRun2Input \
 --customise=HLTrigger/Configuration/customizeHLTforCMSSW.synchronizeHCALHLTofflineRun3on2018data \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForGEM \
 --filein=/store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
 -n 100 --no_output --no_exec
 ```
 
    * optionally, add the following lines at the end of the configuration file
+```python
 process.options.wantSummary = cms.untracked.bool( True )
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
@@ -97,8 +104,6 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('HLTrigReport')
     process.MessageLogger.categories.append('FastReport')
     process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-
-### Customizer
-
+```
 
 
