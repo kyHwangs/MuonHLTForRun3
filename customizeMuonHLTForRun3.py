@@ -181,7 +181,14 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 	)
 
 	process.HLTMuonLocalRecoSequence = cms.Sequence(
-		process.HLTMuonLocalRecoSequence +
+		process.hltMuonDTDigis +
+		process.hltDt1DRecHits +
+		process.hltDt4DSegments +
+		process.hltMuonCSCDigis +
+		process.hltCsc2DRecHits +
+		process.hltCscSegments +
+		process.hltMuonRPCDigis +
+		process.hltRpcRecHits +
 		process.hltMuonGEMDigis +
 		process.hltGemRecHits +
 		process.hltGemSegments
