@@ -1,12 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizeMuonHLTForRun3All(process, newProcessName = "MYHLT"):
+from HLTrigger.Configuration.common import *
 
-    def filters_by_type(process, type):
-        return (filter for filter in process._Process__filters.values() if filter._TypedParameterizable__type == type)
-
-    def producers_by_type(process, type):
-        return (module for module in process._Process__producers.values() if module._TypedParameterizable__type == type)
+def customizeMuonHLTForDoubletRemoval(process, newProcessName = "MYHLT"):
 
     # -- Remove Iter3 (doublet)
     process.HLTIterativeTrackingIter023ForIterL3Muon = cms.Sequence(
@@ -58,6 +54,9 @@ def customizeMuonHLTForRun3All(process, newProcessName = "MYHLT"):
             if hasattr(mod.TrackExtractorPSet, 'inputTrackCollection'):
                 if mod.TrackExtractorPSet.inputTrackCollection == cms.InputTag( "hltIter3IterL3FromL1MuonMerged" ):
                     mod.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter2IterL3FromL1MuonMerged" )
+
+
+def customizeMuonHLTForCscSegment(process, newProcessName = "MYHLT"):
 
     # -- CSC segment builder
     process.hltCscSegments = cms.EDProducer( "CSCSegmentProducer",
@@ -160,20 +159,15 @@ def customizeMuonHLTForRun3All(process, newProcessName = "MYHLT"):
         algo_type = cms.int32( 1 )
     )
 
-    # -- GEM
-
-
     return process
 
 
+def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
+
+	return process
+
+
 def customizeMuonHLTForPatatrack(process, newProcessName = "MYHLT"):
-
-
-    	def filters_by_type(process, type):
-        	return (filter for filter in process._Process__filters.values() if filter._TypedParameterizable__type == type)
-
-    	def producers_by_type(process, type):
-        	return (module for module in process._Process__producers.values() if module._TypedParameterizable__type == type)
 
     	# -- modify process to create patatrack pixel tracks and vertices
 	from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
@@ -359,13 +353,6 @@ def customizeMuonHLTForPatatrack(process, newProcessName = "MYHLT"):
 
 def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 
-
-    	def filters_by_type(process, type):
-        	return (filter for filter in process._Process__filters.values() if filter._TypedParameterizable__type == type)
-
-    	def producers_by_type(process, type):
-        	return (module for module in process._Process__producers.values() if module._TypedParameterizable__type == type)
-
     	# -- modify process to create patatrack pixel tracks and vertices
 	from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
 
@@ -530,5 +517,28 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 
 	process.hltIterL3MuonsNoID.inputTrackCollection = cms.InputTag( "hltIter0IterL3FromL1MuonTrackWithVertexSelector")
 
+
+	return process
+
+
+def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
+                           doDoubletRemoval = True,
+                           doGEM = False,
+                           doPatatrack = False,
+                           doPatatrackGlobal = False):
+
+	process = customizeMuonHLTForCscSegment(process, newProcessName)
+
+	if doDoubletRemoval:
+		process = customizeMuonHLTForCscSegment(process, newProcessName)
+
+	if doGEM:
+		process = customizeMuonHLTForGEM(process, newProcessName)
+
+	if doPatatrack:
+		process = customizeMuonHLTForPatatrack(process, newProcessName)
+
+	if doPatatrackGlobal:
+		process = customizeMuonHLTForPatatrackGlobal(process, newProcessName)
 
 	return process
