@@ -55,6 +55,7 @@ def customizeMuonHLTForDoubletRemoval(process, newProcessName = "MYHLT"):
                 if mod.TrackExtractorPSet.inputTrackCollection == cms.InputTag( "hltIter3IterL3FromL1MuonMerged" ):
                     mod.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter2IterL3FromL1MuonMerged" )
 
+    return process
 
 def customizeMuonHLTForCscSegment(process, newProcessName = "MYHLT"):
 
@@ -163,6 +164,10 @@ def customizeMuonHLTForCscSegment(process, newProcessName = "MYHLT"):
 
 
 def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
+
+
+
+
 
 	return process
 
@@ -523,7 +528,7 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
-                           doGEM = False,
+                           doGEM = True,
                            doPatatrack = False,
                            doPatatrackGlobal = False):
 
