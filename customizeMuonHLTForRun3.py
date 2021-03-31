@@ -188,32 +188,23 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 	)
 
 	# L2 reconstruction
-	process.hltL2MuonSeeds.ServiceParameters.GEMLayers = cms.untracked.bool(True)
-	process.hltL2Muons.ServiceParameters.GEMLayers = cms.untracked.bool(True)
 	process.hltL2Muons.L2TrajBuilderParameters.FilterParameters.EnableGEMMeasurement = cms.bool(True)
 	process.hltL2Muons.L2TrajBuilderParameters.FilterParameters.GEMRecSegmentLabel = cms.InputTag("hltGemRecHits")
 	process.hltL2Muons.L2TrajBuilderParameters.BWFilterParameters.EnableGEMMeasurement = cms.bool(True)
 	process.hltL2Muons.L2TrajBuilderParameters.BWFilterParameters.GEMRecSegmentLabel = cms.InputTag("hltGemRecHits")
 
 	# L3 reconstruction
-	process.hltL3MuonsIterL3OI.ServiceParameters.GEMLayers = cms.untracked.bool(True)
 	process.hltL3MuonsIterL3OI.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
 	process.hltL3MuonsIterL3OI.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
-	process.hltL3MuonsIterL3IO.ServiceParameters.GEMLayers = cms.untracked.bool(True)
 	process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
 	process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
-	process.hltIterL3GlbMuon.ServiceParameters.GEMLayers = cms.untracked.bool(True)
 	process.hltIterL3GlbMuon.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
 	process.hltIterL3GlbMuon.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
 	process.hltIterL3MuonsNoID.TrackAssociatorParameters.useGEM = cms.bool(True)
 	process.hltIterL3MuonsNoID.TrackAssociatorParameters.GEMSegmentCollectionLabel = cms.InputTag("hltGemSegments")
-	process.hltIterL3MuonsNoID.TimingFillerParameters.DTTimingParameters.ServiceParameters.GEMLayers = cms.untracked.bool(True)
-	process.hltIterL3MuonsNoID.TimingFillerParameters.CSCTimingParameters.ServiceParameters.GEMLayers = cms.untracked.bool(True)
-	process.hltIterL3MuonsNoID.CaloExtractorPSet.ServiceParameters.GEMLayers = cms.untracked.bool(True)
-	process.hltIterL3MuonsNoID.JetExtractorPSet.ServiceParameters.GEMLayers = cms.untracked.bool(True)
 
 	return process
 
