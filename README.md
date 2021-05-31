@@ -1,7 +1,78 @@
 
 # CMS Run 3 Muon HLT
 
+## CMSSW_11_3_X
+
+### Setup
+```shell
+cmsrel CMSSW_11_3_1
+cd CMSSW_11_3_1/src
+cmsenv
+git cms-init
+
+# Customizer for Muon HLT
+git cms-addpkg HLTrigger/Configuration
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+### Obtaining HLT menu
+1. hltGetConfiguration
+```shell
+hltGetConfiguration /dev/CMSSW_11_3_0/GRun/V14 --type GRun \
+--path HLTriggerFirstPath,HLT_IsoMu24_v*,HLT_Mu50_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--unprescale --cff >$CMSSW_BASE/src/HLTrigger/Configuration/python/HLT_MuonHLT_cff.py
+```
+
+2. cmsDriver
+   * Run 3 MC
+```shell
+cmsDriver.py hlt_muon \
+--python_filename=hlt_muon_Run3_mc.py \
+--step HLT:MuonHLT \
+--process MYHLT --era=Run3 \
+--mc --conditions=113X_mcRun3_2021_realistic_v10 \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForGEM \
+--filein=root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/WprimeToMuNu_M-5000_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/FlatPU0to80_112X_mcRun3_2021_realistic_v16-v2/30000/1f31ab0f-41b1-42a4-a1e2-865d2ca72e29.root \
+-n 100 --no_output --no_exec
+```
+
+   * 2018 data
+```shell
+cmsDriver.py hlt_muon \
+--python_filename=hlt_muon_Run3_data.py \
+--step HLT:MuonHLT \
+--process MYHLT --era=Run3 \
+--data --conditions=113X_dataRun3_HLT_v1 \
+--customise=HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
+--filein=/store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
+-n 100 --no_output --no_exec
+```
+
+   * optionally, add the following lines at the end of the configuration file to print out more info
+```python
+process.options.wantSummary = cms.untracked.bool( True )
+if 'MessageLogger' in process.__dict__:
+    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
+    process.MessageLogger.categories.append('L1GtTrigReport')
+    process.MessageLogger.categories.append('L1TGlobalSummary')
+    process.MessageLogger.categories.append('HLTrigReport')
+    process.MessageLogger.categories.append('FastReport')
+    process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+```
+
+
+
+
 ## CMSSW_11_2_0 (without Patatrack)
+
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -97,12 +168,15 @@ cmsDriver.py hlt_muon \
 ```python
 process.options.wantSummary = cms.untracked.bool( True )
 if 'MessageLogger' in process.__dict__:
-    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
-    process.MessageLogger.categories.append('L1GtTrigReport')
-    process.MessageLogger.categories.append('L1TGlobalSummary')
-    process.MessageLogger.categories.append('HLTrigReport')
-    process.MessageLogger.categories.append('FastReport')
-    process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+    process.MessageLogger.TriggerSummaryProducerAOD = cms.untracked.PSet()
+    process.MessageLogger.L1GtTrigReport = cms.untracked.PSet()
+    process.MessageLogger.L1TGlobalSummary = cms.untracked.PSet()
+    process.MessageLogger.HLTrigReport = cms.untracked.PSet()
+    process.MessageLogger.FastReport = cms.untracked.PSet()
+    process.MessageLogger.ThroughputService = cms.untracked.PSet()
+    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 ```
 
+</p>
+</details>
 
