@@ -594,13 +594,13 @@ def customizerFuncForMuonHLTSeeding(
         L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
         L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-        mvaFileB = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_barrel.xml"),
-        mvaFileE = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_endcap.xml"),
+        mvaFileB = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_barrel.xml"),
+        mvaFileE = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_endcap.xml"),
 
-        mvaScaleMeanB = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleMean") ),
-        mvaScaleStdB  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleStd") ),
-        mvaScaleMeanE = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleMean") ),
-        mvaScaleStdE  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleStd") ),
+        mvaScaleMeanB = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleMean") ),
+        mvaScaleStdB  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleStd") ),
+        mvaScaleMeanE = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleMean") ),
+        mvaScaleStdE  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleStd") ),
 
         doSort = cms.bool(doSort),
         nSeedsMaxB = cms.int32(nSeedsMaxBs[0]),
@@ -617,13 +617,13 @@ def customizerFuncForMuonHLTSeeding(
         L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
         L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-        mvaFileB = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_barrel.xml" ),
-        mvaFileE = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_endcap.xml" ),
+        mvaFileB = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_barrel.xml" ),
+        mvaFileE = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_endcap.xml" ),
 
-        mvaScaleMeanB = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleMean") ),
-        mvaScaleStdB  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleStd") ),
-        mvaScaleMeanE = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleMean") ),
-        mvaScaleStdE  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleStd") ),
+        mvaScaleMeanB = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleMean") ),
+        mvaScaleStdB  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleStd") ),
+        mvaScaleMeanE = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleMean") ),
+        mvaScaleStdE  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleStd") ),
 
         doSort = cms.bool(doSort),
         nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
