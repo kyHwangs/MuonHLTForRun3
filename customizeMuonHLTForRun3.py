@@ -573,8 +573,8 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 def customizerFuncForMuonHLTSeeding(
     process, newProcessName = "MYHLT",
     doSort = False,
-    nSeedsMaxBs = (-1, -1), nSeedsMaxEs = (-1, -1),
-    mvaCutBs = (0, 0), mvaCutEs = (0, 0)):
+    nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
+    mvaCutBs = (-1, -1), mvaCutEs = (-1, -1)):
 
     import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
 
