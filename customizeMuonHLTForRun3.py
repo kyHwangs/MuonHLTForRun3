@@ -570,6 +570,106 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 	return process
 
 
+def customizerFuncForMuonHLTSeeding(
+    process, newProcessName = "MYHLT",
+    doSort = False,
+    nSeedsMaxBs = (-1, -1), nSeedsMaxEs = (-1, -1),
+    mvaCutBs = (0, 0), mvaCutEs = (0, 0)):
+
+    import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
+
+    print "\nCustomizing Seed MVA Classifier:"
+    print "\tdoSort:      ", doSort
+    print "\tnSeedsMaxBs: ", nSeedsMaxBs
+    print "\tnSeedsMaxEs: ", nSeedsMaxEs
+    print "\tmvaCutBs:   ", mvaCutBs
+    print "\tmvaCutEs:   ", mvaCutEs
+
+    # -- Seed MVA Classifiers
+    process.hltIter2IterL3MuonPixelSeedsFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+        rejectAll = cms.bool(False),
+        isFromL1 = cms.bool(False),
+
+        src    = cms.InputTag("hltIter2IterL3MuonPixelSeeds", "", newProcessName),
+        L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
+        L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+
+        mvaFileB = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_barrel.xml"),
+        mvaFileE = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2Seeds_endcap.xml"),
+
+        mvaScaleMeanB = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleMean") ),
+        mvaScaleStdB  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_barrel_ScaleStd") ),
+        mvaScaleMeanE = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleMean") ),
+        mvaScaleStdE  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2Seeds_endcap_ScaleStd") ),
+
+        doSort = cms.bool(doSort),
+        nSeedsMaxB = cms.int32(nSeedsMaxBs[0]),
+        nSeedsMaxE = cms.int32(nSeedsMaxEs[0]),
+
+        mvaCutB = cms.double(mvaCutBs[0]),
+        mvaCutE = cms.double(mvaCutEs[0])
+    )
+    process.hltIter2IterL3FromL1MuonPixelSeedsFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+        rejectAll = cms.bool(False),
+        isFromL1 = cms.bool(True),
+
+        src    = cms.InputTag("hltIter2IterL3FromL1MuonPixelSeeds", "", newProcessName),
+        L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
+        L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+
+        mvaFileB = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_barrel.xml" ),
+        mvaFileE = cms.untracked.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter2FromL1Seeds_endcap.xml" ),
+
+        mvaScaleMeanB = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleMean") ),
+        mvaScaleStdB  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_barrel_ScaleStd") ),
+        mvaScaleMeanE = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleMean") ),
+        mvaScaleStdE  = cms.untracked.vdouble( getattr(_mvaScale, "xgb_Run3_Iter2FromL1Seeds_endcap_ScaleStd") ),
+
+        doSort = cms.bool(doSort),
+        nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
+        nSeedsMaxE = cms.int32(nSeedsMaxEs[1]),
+
+        mvaCutB = cms.double(mvaCutBs[1]),
+        mvaCutE = cms.double(mvaCutEs[1])
+    )
+
+    # -- Track Candidates
+    process.hltIter2IterL3MuonCkfTrackCandidates.src       = cms.InputTag("hltIter2IterL3MuonPixelSeedsFiltered", "", newProcessName)
+    process.hltIter2IterL3FromL1MuonCkfTrackCandidates.src = cms.InputTag("hltIter2IterL3FromL1MuonPixelSeedsFiltered", "", newProcessName)
+
+    # -- Sequences
+    process.HLTIterativeTrackingIteration2ForIterL3Muon = cms.Sequence(
+        process.hltIter2IterL3MuonClustersRefRemoval+
+        process.hltIter2IterL3MuonMaskedMeasurementTrackerEvent+
+        process.hltIter2IterL3MuonPixelLayerTriplets+
+        process.hltIter2IterL3MuonPixelClusterCheck+
+        process.hltIter2IterL3MuonPixelHitDoublets+
+        process.hltIter2IterL3MuonPixelHitTriplets+
+        process.hltIter2IterL3MuonPixelSeeds+
+        process.hltIter2IterL3MuonPixelSeedsFiltered+
+        process.hltIter2IterL3MuonCkfTrackCandidates+
+        process.hltIter2IterL3MuonCtfWithMaterialTracks+
+        process.hltIter2IterL3MuonTrackCutClassifier+
+        process.hltIter2IterL3MuonTrackSelectionHighPurity
+    )
+    process.HLTIterativeTrackingIteration2ForIterL3FromL1Muon = cms.Sequence(
+        process.hltIter2IterL3FromL1MuonClustersRefRemoval+
+        process.hltIter2IterL3FromL1MuonMaskedMeasurementTrackerEvent+
+        process.hltIter2IterL3FromL1MuonPixelLayerTriplets+
+        process.hltIter2IterL3FromL1MuonPixelClusterCheck+
+        process.hltIter2IterL3FromL1MuonPixelHitDoublets+
+        process.hltIter2IterL3FromL1MuonPixelHitTriplets+
+        process.hltIter2IterL3FromL1MuonPixelSeeds+
+        process.hltIter2IterL3FromL1MuonPixelSeedsFiltered+
+        process.hltIter2IterL3FromL1MuonCkfTrackCandidates+
+        process.hltIter2IterL3FromL1MuonCtfWithMaterialTracks+
+        process.hltIter2IterL3FromL1MuonTrackCutClassifier+
+        process.hltIter2IterL3FromL1MuonTrackSelectionHighPurity
+    )
+
+    return process
+
+
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,
