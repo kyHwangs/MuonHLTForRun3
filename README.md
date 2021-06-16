@@ -31,7 +31,7 @@ hltGetConfiguration /dev/CMSSW_11_3_0/GRun/V14 --type GRun \
 ```
 
 2. cmsDriver
-   * Run 3 MC
+* Run 3 MC
 ```shell
 cmsDriver.py hlt_muon \
 --python_filename=hlt_muon_Run3_mc.py \
@@ -47,7 +47,7 @@ cmsDriver.py hlt_muon \
 -n 100 --no_output --no_exec
 ```
 
-   * 2018 data
+* 2018 data
 ```shell
 cmsDriver.py hlt_muon \
 --python_filename=hlt_muon_Run3_data.py \
