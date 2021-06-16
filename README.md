@@ -5,10 +5,15 @@
 
 ### Setup
 ```shell
-cmsrel CMSSW_11_3_1
-cd CMSSW_11_3_1/src
+cmsrel CMSSW_11_3_1_patch1
+cd CMSSW_11_3_1_patch1/src
 cmsenv
 git cms-init
+
+# For OI and IO seeding upgrades
+git cms-merge-topic khaosmos93:CMSSW_11_3_1_patch1-MuonHLTForRun3
+git clone https://github.com/cms-data/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data
+cp /afs/cern.ch/user/j/jschulte/public/OIDNN/* RecoMuon/TrackerSeedGenerator/data
 
 # Customizer for Muon HLT
 git cms-addpkg HLTrigger/Configuration
@@ -21,7 +26,7 @@ scram b -j 8
 1. hltGetConfiguration
 ```shell
 hltGetConfiguration /dev/CMSSW_11_3_0/GRun/V14 --type GRun \
---path HLTriggerFirstPath,HLT_IsoMu24_v*,HLT_Mu50_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
+--path HLTriggerFirstPath,HLT_IsoMu24_v*,HLT_Mu50_v*,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*,HLTriggerFinalPath,HLTAnalyzerEndpath \
 --unprescale --cff >$CMSSW_BASE/src/HLTrigger/Configuration/python/HLT_MuonHLT_cff.py
 ```
 
@@ -36,7 +41,9 @@ cmsDriver.py hlt_muon \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForGEM \
---filein=root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/WprimeToMuNu_M-5000_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/FlatPU0to80_112X_mcRun3_2021_realistic_v16-v2/30000/1f31ab0f-41b1-42a4-a1e2-865d2ca72e29.root \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizerFuncForMuonHLTSeeding \
+--customise=RecoMuon/TrackerSeedGenerator/customizeOIseeding.customizeOIseeding \
+--filein=/store/mc/Run3Winter21DRMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/120003/e786c41e-21ba-489f-880c-42d0a248e59e.root \
 -n 100 --no_output --no_exec
 ```
 
@@ -50,6 +57,8 @@ cmsDriver.py hlt_muon \
 --customise=HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizerFuncForMuonHLTSeeding \
+--customise=RecoMuon/TrackerSeedGenerator/customizeOIseeding.customizeOIseeding \
 --filein=/store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
 -n 100 --no_output --no_exec
 ```

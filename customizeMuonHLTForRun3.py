@@ -574,7 +574,7 @@ def customizerFuncForMuonHLTSeeding(
     process, newProcessName = "MYHLT",
     doSort = False,
     nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
-    mvaCutBs = (-1, -1), mvaCutEs = (-1, -1)):
+    mvaCutBs = (0.01, 0.01), mvaCutEs = (0.01, 0.01)):
 
     import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
 
@@ -582,8 +582,8 @@ def customizerFuncForMuonHLTSeeding(
     print "\tdoSort:      ", doSort
     print "\tnSeedsMaxBs: ", nSeedsMaxBs
     print "\tnSeedsMaxEs: ", nSeedsMaxEs
-    print "\tmvaCutBs:   ", mvaCutBs
-    print "\tmvaCutEs:   ", mvaCutEs
+    print "\tmvaCutBs:    ", mvaCutBs
+    print "\tmvaCutEs:    ", mvaCutEs
 
     # -- Seed MVA Classifiers
     process.hltIter2IterL3MuonPixelSeedsFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
