@@ -63,8 +63,9 @@ cmsDriver.py hlt_muon \
 -n 100 --no_output --no_exec
 ```
 
-   * optionally, add the following lines at the end of the configuration file to print out more info
+   * optionally, add the following lines at the end of the configuration file to print out more info, e.g.
 ```python
+cat << EOT >> hlt_muon_Run3_mc.py
 process.options.wantSummary = cms.untracked.bool( True )
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.TriggerSummaryProducerAOD = cms.untracked.PSet()
@@ -74,6 +75,7 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.FastReport = cms.untracked.PSet()
     process.MessageLogger.ThroughputService = cms.untracked.PSet()
     process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+EOT
 ```
 
 
