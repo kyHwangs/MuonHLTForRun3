@@ -670,6 +670,13 @@ def customizerFuncForMuonHLTSeeding(
     return process
 
 
+def customizeDoubleMuIsoFix(process, newProcessName = "MYHLT"):
+	if hasattr(process, "hltL3MuonRelTrkIsolationVVL"):
+		process.hltL3MuonRelTrkIsolationVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag('hltIter2L3MuonMerged', '', newProcessName)
+
+	return process
+
+
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,

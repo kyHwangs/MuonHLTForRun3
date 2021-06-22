@@ -38,6 +38,7 @@ cmsDriver.py hlt_muon \
 --step HLT:MuonHLT \
 --process MYHLT --era=Run3 \
 --mc --conditions=113X_mcRun3_2021_realistic_v10 \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeDoubleMuIsoFix \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForGEM \
@@ -55,6 +56,7 @@ cmsDriver.py hlt_muon \
 --process MYHLT --era=Run3 \
 --data --conditions=113X_dataRun3_HLT_v1 \
 --customise=HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeDoubleMuIsoFix \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForDoubletRemoval \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForCscSegment \
 --customise=HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizerFuncForMuonHLTSeeding \
