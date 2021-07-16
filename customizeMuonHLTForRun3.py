@@ -446,7 +446,7 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 	process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
 	process.hltPixelTracksSoA.cpu.idealConditions = cms.bool(True)
 
-	process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegions )
+	process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence(process.HLTRecopixelvertexingTask + process.hltIterL3MuonPixelTracksTrackingRegions )
 
 	process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracks")
 	process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.includeFourthHit = cms.bool(True)
@@ -503,7 +503,7 @@ def customizeMuonHLTForPatatrackGlobal(process, newProcessName = "MYHLT"):
 	process.hltIter0IterL3MuonTrackCutClassifier.mva.min3DLayers = cms.vint32( 0, 0, 0 )
 	process.hltIter0IterL3MuonTrackCutClassifier.vertices = cms.InputTag("hltTrimmedPixelVertices")
 
-	process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegions )
+	process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon = cms.Sequence(process.HLTRecopixelvertexingTask + process.hltIterL3FromL1MuonPixelTracksTrackingRegions )
 	process.hltIterL3FromL1MuonPixelVertices.TrackCollection = cms.InputTag("hltPixelTracks")
 
 	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracks")
