@@ -687,7 +687,7 @@ def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
 	process = customizeDoubleMuIsoFix(process, newProcessName)
 
 	if doDoubletRemoval:
-		process = customizeMuonHLTForCscSegment(process, newProcessName)
+		process = customizeMuonHLTForDoubletRemoval(process, newProcessName)
 
 	if doGEM:
 		process = customizeMuonHLTForGEM(process, newProcessName)
