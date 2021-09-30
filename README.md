@@ -1,7 +1,30 @@
 
 # CMS Run 3 Muon HLT
 
+
+## CMSSW_12_0_X (work in progress)
+
+### Setup
+```shell
+cmsrel CMSSW_12_0_1
+cd CMSSW_12_0_1/src
+cmsenv
+git cms-init
+
+git cms-addpkg RecoMuon/TrackerSeedGenerator
+git clone -b v7Fast https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data
+
+git cms-addpkg HLTrigger/Configuration
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+
 ## CMSSW_11_3_X
+
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -80,7 +103,8 @@ if 'MessageLogger' in process.__dict__:
 EOT
 ```
 
-
+</p>
+</details>
 
 
 ## CMSSW_11_2_0 (without Patatrack)
