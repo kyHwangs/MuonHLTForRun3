@@ -626,6 +626,11 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, newProcessName = "MY
 	  regions = cms.InputTag("hltIterL3MuonPixelTracksTrackingRegions")
 
 	)
+
+	process.hltIterL3MuonPixelTracksTrackingRegions.Pt_min = cms.double( 0.0 )
+	process.hltIterL3MuonPixelTracksTrackingRegions.maxRegions = cms.int32( 5 )
+
+
 	process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL2 )
 
 	process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionL2")
@@ -689,6 +694,10 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, newProcessName = "MY
 	  regions = cms.InputTag("hltIterL3FromL1MuonPixelTracksTrackingRegions")
 
 	)
+
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.ptMin = cms.double( 0.0 )
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+
 	process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL1 )
 	process.hltIterL3FromL1MuonPixelVertices.TrackCollection = cms.InputTag("hltPixelTracks")
 
