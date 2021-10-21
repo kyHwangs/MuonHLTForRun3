@@ -165,6 +165,7 @@ def customizeMuonHLTForCscSegment(process, newProcessName = "MYHLT"):
 
 
 def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
+	process.load('Geometry.GEMGeometryBuilder.gemGeometryDB_cfi')
 
 	# GEM local reco (from offline)
 	from Configuration.StandardSequences.RawToDigi_cff import muonGEMDigis
