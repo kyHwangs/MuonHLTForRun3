@@ -885,6 +885,88 @@ def customizerFuncForMuonHLTSeeding(
 
     return process
 
+def customizeIOSeedingPatatrack(
+	process, newProcessName = "MYHLT",
+	doSort = False,
+	nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
+	mvaCutBs = (0.01, 0.01), mvaCutEs = (0.01, 0.01)):
+
+	import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
+
+	# -- Seed MVA Classifiers
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+		rejectAll = cms.bool(False),
+		isFromL1 = cms.bool(False),
+
+		src    = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracks", "", newProcessName),
+		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
+		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+
+		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Barrel_hltIter2.xml"),
+		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Endcap_hltIter2.xml"),
+
+		mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2_ScaleMean") ),
+		mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2_ScaleStd") ),
+		mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2_ScaleMean") ),
+		mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2_ScaleStd") ),
+
+		doSort = cms.bool(doSort),
+		nSeedsMaxB = cms.int32(nSeedsMaxBs[0]),
+		nSeedsMaxE = cms.int32(nSeedsMaxEs[0]),
+
+		mvaCutB = cms.double(mvaCutBs[0]),
+		mvaCutE = cms.double(mvaCutEs[0])
+	)
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+		rejectAll = cms.bool(False),
+		isFromL1 = cms.bool(True),
+
+		src    = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks", "", newProcessName),
+		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
+		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+
+		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Barrel_hltIter2FromL1.xml"),
+		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Endcap_hltIter2FromL1.xml"),
+
+		mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2FromL1_ScaleMean") ),
+		mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2FromL1_ScaleStd") ),
+		mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2FromL1_ScaleMean") ),
+		mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2FromL1_ScaleStd") ),
+
+		doSort = cms.bool(doSort),
+		nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
+		nSeedsMaxE = cms.int32(nSeedsMaxEs[1]),
+
+		mvaCutB = cms.double(mvaCutBs[1]),
+		mvaCutE = cms.double(mvaCutEs[1])
+	)
+
+	# -- Track Candidates
+	process.hltIter0IterL3MuonCkfTrackCandidates.src       = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered", "", newProcessName)
+	process.hltIter0IterL3FromL1MuonCkfTrackCandidates.src = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered", "", newProcessName)
+
+	# -- Sequences
+	process.HLTIterativeTrackingIteration0ForIterL3Muon = cms.Sequence(
+		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks +
+		process.hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered +
+		process.hltIter0IterL3MuonCkfTrackCandidates +
+		process.hltIter0IterL3MuonCtfWithMaterialTracks +
+		process.hltIter0IterL3MuonTrackCutClassifier +
+		process.hltIter0IterL3MuonTrackSelectionHighPurity +
+		process.hltIter0IterL3MuonTrackWithVertexSelector
+	)
+	process.HLTIterativeTrackingIteration0ForIterL3FromL1Muon = cms.Sequence(
+		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks +
+		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered +
+		process.hltIter0IterL3FromL1MuonCkfTrackCandidates +
+		process.hltIter0IterL3FromL1MuonCtfWithMaterialTracks +
+		process.hltIter0IterL3FromL1MuonTrackCutClassifier +
+		process.hltIter0IterL3FromL1MuonTrackSelectionHighPurity +
+		process.hltIter0IterL3FromL1MuonTrackWithVertexSelector
+	)
+
+	return process
+
 
 def customizeDoubleMuIsoFix(process, newProcessName = "MYHLT"):
 	if hasattr(process, "hltL3MuonRelTrkIsolationVVL"):
