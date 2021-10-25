@@ -978,8 +978,10 @@ def customizeDoubleMuIsoFix(process, newProcessName = "MYHLT"):
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,
-                           doPatatrack = False,
-                           doPatatrackGlobal = False):
+                           doPatatrack = True,
+                           doPatatrackGlobal = False,
+                           doOISeeding = True,
+                           doIOSeeding = True):
 
 	process = customizeMuonHLTForCscSegment(process, newProcessName)
 	process = customizeDoubleMuIsoFix(process, newProcessName)
@@ -995,5 +997,12 @@ def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
 
 	if doPatatrackGlobal:
 		process = customizeMuonHLTForPatatrackGlobal(process, newProcessName)
+
+	if doOISeeding:
+		from RecoMuon.TrackerSeedGenerator.customizeOIseeding import customizeOIseeding
+		process = customizeOIseeding(process)
+
+	if doIOSeeding:
+		process = customizeIOSeedingPatatrack(process, newProcessName)
 
 	return process
