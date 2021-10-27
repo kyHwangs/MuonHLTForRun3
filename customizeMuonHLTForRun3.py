@@ -1015,27 +1015,26 @@ def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,
                            doPatatrack = True,
-                           doPatatrackGlobal = False,
                            doOISeeding = True,
                            doIOSeeding = True):
 
-	process = customizeMuonHLTForCscSegment(process, newProcessName)
-	process = customizeDoubleMuIsoFix(process, newProcessName)
+	process = customizeMuonHLTForCscSegment(process, newProcessName = newProcessName)
+	process = customizeDoubleMuIsoFix(process, newProcessName = newProcessName)
 
 	if doDoubletRemoval:
-		process = customizeMuonHLTForDoubletRemoval(process, newProcessName)
+		process = customizeMuonHLTForDoubletRemoval(process, newProcessName = newProcessName)
 
 	if doGEM:
-		process = customizeMuonHLTForGEM(process, newProcessName)
+		process = customizeMuonHLTForGEM(process, newProcessName = newProcessName)
 
 	if doPatatrack:
-		process = customizeMuonHLTForPatatrackWithIsoAndTriplets(process, newProcessName)
+		process = customizeMuonHLTForPatatrackWithIsoAndTriplets(process, newProcessName = newProcessName)
 
 	if doOISeeding:
 		from RecoMuon.TrackerSeedGenerator.customizeOIseeding import customizeOIseeding
 		process = customizeOIseeding(process)
 
 	if doIOSeeding:
-		process = customizeIOSeedingPatatrack(process, newProcessName)
+		process = customizeIOSeedingPatatrack(process, newProcessName = newProcessName)
 
 	return process

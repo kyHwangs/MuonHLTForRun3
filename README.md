@@ -1,8 +1,31 @@
 
 # CMS Run 3 Muon HLT
 
+## CMSSW_12_1_X
 
-## CMSSW_12_0_X (work in progress)
+### Setup
+```shell
+cmsrel CMSSW_12_1_0_pre4
+cd CMSSW_12_1_0_pre4/src
+cmsenv
+git cms-init
+
+git cms-merge-topic 35237  # no need in >= CMSSW_12_1_0_pre5
+
+git cms-addpkg RecoMuon/TrackerSeedGenerator
+git clone -b v7Fast https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data  # to be updated shortly
+
+git cms-addpkg HLTrigger/Configuration
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+
+## CMSSW_12_0_X
+
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -19,7 +42,8 @@ git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configurati
 
 scram b -j 8
 ```
-
+</p>
+</details>
 
 ## CMSSW_11_3_X
 
