@@ -957,13 +957,13 @@ def customizeIOSeedingPatatrack(
 		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
 		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Barrel_hltIter2.xml"),
-		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Endcap_hltIter2.xml"),
+		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v8Pre_Barrel_hltIter2.xml"),
+		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v8Pre_Endcap_hltIter2.xml"),
 
-		mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2_ScaleMean") ),
-		mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2_ScaleStd") ),
-		mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2_ScaleMean") ),
-		mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2_ScaleStd") ),
+		mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "v8Pre_Barrel_hltIter2_ScaleMean") ),
+		mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "v8Pre_Barrel_hltIter2_ScaleStd") ),
+		mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "v8Pre_Endcap_hltIter2_ScaleMean") ),
+		mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "v8Pre_Endcap_hltIter2_ScaleStd") ),
 
 		doSort = cms.bool(doSort),
 		nSeedsMaxB = cms.int32(nSeedsMaxBs[0]),
@@ -980,13 +980,13 @@ def customizeIOSeedingPatatrack(
 		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
 		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Barrel_hltIter2FromL1.xml"),
-		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v7Fast_Endcap_hltIter2FromL1.xml"),
+		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v8Pre_Barrel_hltIter2FromL1.xml"),
+		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/v8Pre_Endcap_hltIter2FromL1.xml"),
 
-		mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2FromL1_ScaleMean") ),
-		mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "v7Fast_Barrel_hltIter2FromL1_ScaleStd") ),
-		mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2FromL1_ScaleMean") ),
-		mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "v7Fast_Endcap_hltIter2FromL1_ScaleStd") ),
+		mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "v8Pre_Barrel_hltIter2FromL1_ScaleMean") ),
+		mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "v8Pre_Barrel_hltIter2FromL1_ScaleStd") ),
+		mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "v8Pre_Endcap_hltIter2FromL1_ScaleMean") ),
+		mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "v8Pre_Endcap_hltIter2FromL1_ScaleStd") ),
 
 		doSort = cms.bool(doSort),
 		nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
