@@ -224,7 +224,7 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, 
 
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
-		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
 
 
 		process.HLTRecoPixelTracksSequence = cms.Sequence()
@@ -257,21 +257,7 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, 
 		    tipMax = cms.double( 1.0 )
 		)
 	 
-		process = customizeHLTforPatatrack(process)    
-
-		process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksCUDA.idealConditions               = cms.bool(False)
-		process.hltPixelTracksCUDA.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksCUDA.useSimpleTripletCleaner       = cms.bool(False)
-
-		process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksSoA.cpu.idealConditions               = cms.bool(False)
-		process.hltPixelTracksSoA.cpu.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.useSimpleTripletCleaner       = cms.bool(False)
-
-
+		process = customizeHLTforPatatrackTriplets(process)    
 
 
 	process.hltPixelTracksInRegionL2 = cms.EDProducer("TrackSelectorByRegion",
@@ -428,6 +414,7 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, 
 
         )
 	process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionIter0L3Muon")
+	process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag( "hltPixelVertices" )
 	process.hltIter0L3MuonTrackCutClassifier.vertices = cms.InputTag( "hltPixelVertices" )
 	process.hltMuonTkRelIsolationCut0p07Map.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
 
@@ -443,7 +430,7 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=True, newProcessName
 
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
-		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
 
 
 		process.HLTRecoPixelTracksSequence = cms.Sequence()
@@ -476,20 +463,7 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=True, newProcessName
 		    tipMax = cms.double( 1.0 )
 		)
 	 
-		process = customizeHLTforPatatrack(process)    
-
-		process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksCUDA.idealConditions               = cms.bool(False)
-		process.hltPixelTracksCUDA.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksCUDA.useSimpleTripletCleaner       = cms.bool(False)
-
-		process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksSoA.cpu.idealConditions               = cms.bool(False)
-		process.hltPixelTracksSoA.cpu.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.useSimpleTripletCleaner       = cms.bool(False)
-
+		process = customizeHLTforPatatrackTriplets(process)    
 
 
 
@@ -525,7 +499,7 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=True, newProcessNam
 
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
-		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
 
 
 		process.HLTRecoPixelTracksSequence = cms.Sequence()
@@ -558,21 +532,7 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=True, newProcessNam
 		    tipMax = cms.double( 1.0 )
 		)
 	 
-		process = customizeHLTforPatatrack(process)    
-
-		process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksCUDA.idealConditions               = cms.bool(False)
-		process.hltPixelTracksCUDA.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksCUDA.useSimpleTripletCleaner       = cms.bool(False)
-
-		process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksSoA.cpu.idealConditions               = cms.bool(False)
-		process.hltPixelTracksSoA.cpu.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.useSimpleTripletCleaner       = cms.bool(False)
-
-
+		process = customizeHLTforPatatrackTriplets(process)    
 
 
 	process.hltPixelTracksInRegionL2NoVtx = cms.EDProducer("TrackSelectorByRegion",
@@ -647,7 +607,7 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=True, newProcessNa
 
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
-		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
 
 
 		process.HLTRecoPixelTracksSequence = cms.Sequence()
@@ -680,22 +640,7 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=True, newProcessNa
 		    tipMax = cms.double( 1.0 )
 		)
 	 
-		process = customizeHLTforPatatrack(process)    
-
-		process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksCUDA.idealConditions               = cms.bool(False)
-		process.hltPixelTracksCUDA.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksCUDA.useSimpleTripletCleaner       = cms.bool(False)
-
-		process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
-		process.hltPixelTracksSoA.cpu.idealConditions               = cms.bool(False)
-		process.hltPixelTracksSoA.cpu.fillStatistics                = cms.bool(True)
-		process.hltPixelTracksSoA.cpu.useSimpleTripletCleaner       = cms.bool(False)
-
-
-
+		process = customizeHLTforPatatrackTriplets(process)    
 
 	process.hltPixelTracksInRegionL2OpenMu = cms.EDProducer("TrackSelectorByRegion",
 	  produceTrackCollection = cms.bool(True),
