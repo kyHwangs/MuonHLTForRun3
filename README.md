@@ -13,7 +13,7 @@ git cms-init
 git cms-merge-topic 35237  # no need in >= CMSSW_12_1_0_pre5
 
 git cms-addpkg RecoMuon/TrackerSeedGenerator
-git clone -b v7Fast https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data  # to be updated shortly
+git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data
 
 git cms-addpkg HLTrigger/Configuration
 git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
