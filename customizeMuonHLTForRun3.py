@@ -925,9 +925,7 @@ def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doPatatrack = True,
                            doOISeeding = True,
                            doIOSeeding = True):
-
 	process = customizeMuonHLTForCscSegment(process, newProcessName = newProcessName)
-	process = customizeDoubleMuIsoFix(process, newProcessName = newProcessName)
 
 	if doDoubletRemoval:
 		process = customizeMuonHLTForDoubletRemoval(process, newProcessName = newProcessName)
