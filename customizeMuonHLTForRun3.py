@@ -435,8 +435,11 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=True, newProcessName
 
 	if hasattr(process, "HLTTrackerMuonSequenceLowPtIter0and1"):
 		process.HLTTrackerMuonSequenceLowPtIter0and1 = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingIteration0 + process.HLTL3muonrecoNocandSequence + process.hltDiMuonMergingIter01TkMu + process.hltDiMuonLinksIter01TkMuMerge + process.hltGlbTrkMuonsLowPtIter01Merge + process.hltGlbTrkMuonLowPtIter01MergeCands )
-		process.hltDiMuonMergingIter01TkMu.TrackProducers = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltIter0PFlowTrackSelectionHighPurity' )
-		process.hltDiMuonMergingIter01TkMu.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltIter0PFlowTrackSelectionHighPurity' )
+		process.hltDiMuonMergingIter01TkMu.TrackProducers = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks' ) #probably unnecessary
+		process.hltDiMuonMergingIter01TkMu.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks' ) # "" 
+
+	if hasattr(process, "HLTTrackerMuonSequenceLowPt"):
+		process.HLTTrackerMuonSequenceLowPt = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingIteration0 + process.HLTL3muonrecoNocandSequence + process.hltDiMuonMergingIter01TkMu + process.hltDiMuonLinksIter01TkMuMerge + process.hltGlbTrkMuonsLowPtIter01Merge + process.hltGlbTrkMuonLowPtIter01MergeCands )
 
 	return process
 
@@ -727,6 +730,7 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=True, newProcessNa
 
 	process.hltIterL3MuonsOpenMu.inputTrackCollection = cms.InputTag( "hltIter0IterL3FromL1MuonTrackWithVertexSelectorOpenMu")
 
+	
 	return process
 
 
