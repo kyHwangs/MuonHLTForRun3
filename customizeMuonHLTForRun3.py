@@ -923,6 +923,50 @@ def customizeIOSeedingPatatrack(
 	return process
 
 
+def customizeRhoProducersForIso(process):
+    if hasattr(process, "hltFixedGridRhoFastjetECALMFForMuons"):
+        delattr(process, "hltFixedGridRhoFastjetECALMFForMuons")
+
+        process.hltFixedGridRhoFastjetECALMFForMuons = cms.EDProducer( "FixedGridRhoProducerFastjetFromRecHit",
+            hbheRecHitsTag = cms.InputTag( "hltHbhereco" ),
+            ebRecHitsTag = cms.InputTag( 'hltEcalRecHit','EcalRecHitsEB' ),
+            eeRecHitsTag = cms.InputTag( 'hltEcalRecHit','EcalRecHitsEE' ),
+            eThresHB = cms.vdouble(0.1, 0.2, 0.3, 0.3),
+            eThresHE = cms.vdouble(0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+            maxRapidity = cms.double( 2.5 ),
+            gridSpacing = cms.double( 0.55 ),
+            skipHCAL = cms.bool(True), # -- skip HCAL
+            skipECAL = cms.bool(False)
+        )
+
+    if hasattr(process, "hltFixedGridRhoFastjetHCAL"):
+        delattr(process, "hltFixedGridRhoFastjetHCAL")
+
+        process.hltFixedGridRhoFastjetHCAL = cms.EDProducer( "FixedGridRhoProducerFastjetFromRecHit",
+            hbheRecHitsTag = cms.InputTag( "hltHbhereco" ),
+            ebRecHitsTag = cms.InputTag( 'hltEcalRecHit','EcalRecHitsEB' ),
+            eeRecHitsTag = cms.InputTag( 'hltEcalRecHit','EcalRecHitsEE' ),
+            eThresHB = cms.vdouble(0.1, 0.2, 0.3, 0.3),
+            eThresHE = cms.vdouble(0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2),
+            maxRapidity = cms.double( 2.5 ),
+            gridSpacing = cms.double( 0.55 ),
+            skipHCAL = cms.bool(False),
+            skipECAL = cms.bool(True) # -- skip ECAL
+        )
+
+    if hasattr(process, "HLTL3muonEcalPFisorecoSequenceNoBoolsForMuons"):
+        process.HLTL3muonEcalPFisorecoSequenceNoBoolsForMuons = cms.Sequence( 
+            process.HLTDoFullUnpackingEgammaEcalMFSequence + 
+            process.HLTDoLocalHcalSequence + 
+            process.hltFixedGridRhoFastjetECALMFForMuons + 
+            process.hltFixedGridRhoFastjetHCAL + 
+            process.HLTPFClusteringEcalMFForMuons + 
+            process.hltMuonEcalMFPFClusterIsoForMuons
+        )
+
+    return process
+
+
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,
