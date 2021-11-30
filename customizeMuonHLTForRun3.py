@@ -967,6 +967,48 @@ def customizeRhoProducersForIso(process):
     return process
 
 
+def addHLTL1METTkMu50(process):
+    if not hasattr(process, "hltL1sAllETMHFSeeds"):
+        return process
+
+    if not hasattr(process, "HLTTrackerMuonSequence"):
+        return process
+
+    process.hltPreL1METTkMu50 = cms.EDFilter( "HLTPrescaler",
+        L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
+        offset = cms.uint32( 0 )
+    )
+
+    process.hltTkMuFiltered50Q = cms.EDFilter( "HLTMuonTrkL1TFilter",
+        maxNormalizedChi2 = cms.double( 1.0E99 ),
+        saveTags = cms.bool( True ),
+        maxAbsEta = cms.double( 1.0E99 ),
+        previousCandTag = cms.InputTag( "" ),
+        minPt = cms.double( 50.0 ),
+        minN = cms.uint32( 1 ),
+        inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
+        minMuonStations = cms.int32( -1 ),
+        trkMuonId = cms.uint32( 0 ),
+        requiredTypeMask = cms.uint32( 0 ),
+        minMuonHits = cms.int32( -1 ),
+        minTrkHits = cms.int32( -1 ),
+        inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
+        allowedTypeMask = cms.uint32( 255 )
+    )
+
+    process.HLT_L1MET_TkMu50_v1 = cms.Path(
+        process.HLTBeginSequence +
+        process.hltL1sAllETMHFSeeds +
+        process.hltPreL1METTkMu50 +
+        process.HLTL2muonrecoSequence +
+        process.HLTTrackerMuonSequence +
+        process.hltTkMuFiltered50Q +
+        process.HLTEndSequence
+    )
+
+    return process
+
+
 def customizeMuonHLTForAll(process, newProcessName = "MYHLT",
                            doDoubletRemoval = True,
                            doGEM = True,
