@@ -359,6 +359,7 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, 
 		   hasattr(process, "hltMuonTkRelIsolationCut0p07Map"):
 			process.HLTTrackReconstructionForIsoL3MuonIter02 = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingL3MuonIteration0 )
 			process.hltMuonTkRelIsolationCut0p07Map.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+			process.hltL3MuonCombRelIsolationVVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
 
 		if hasattr(process, "HLTL3muontrkisorecoSequence") and\
 		   hasattr(process, "hltL3MuonRelTrkIsolationVVL"):
