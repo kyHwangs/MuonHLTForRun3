@@ -973,6 +973,33 @@ def customizeRhoProducersForIso(process):
     return process
 
 
+def customizeTrkIsoFullHLTTracking(process):
+    # TRK_newTracking must be loaded in advance
+    if hasattr(process, "HLTTrackReconstructionForIsoL3MuonIter02"):
+        process.HLTTrackReconstructionForIsoL3MuonIter02 = cms.Sequence(
+            process.HLTDoLocalPixelSequence +
+            process.HLTDoLocalStripSequence +
+            process.HLTIterativeTrackingIter02
+        )
+        if hasattr(process, "hltMuonTkRelIsolationCut0p07Map"):
+            process.hltMuonTkRelIsolationCut0p07Map.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltMergedTracks")
+        if hasattr(process, "hltL3MuonCombRelIsolationVVVL"):
+            process.hltL3MuonCombRelIsolationVVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltMergedTracks")
+
+    if hasattr(process, "HLTL3muontrkisorecoSequence"):
+        process.HLTL3muontrkisorecoSequence = cms.Sequence(
+            process.HLTDoLocalPixelSequence +
+            process.HLTDoLocalStripSequence +
+            process.HLTIterativeTrackingIter02
+        )
+        if hasattr(process, "hltL3MuonRelTrkIsolationVVL"):
+            process.hltL3MuonRelTrkIsolationVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltMergedTracks")
+        if hasattr(process, "hltTauPt15MuPts711Mass1p3to2p1IsoCharge1"):
+            process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltMergedTracks")
+        if hasattr(process, "hltTauPt15MuPts711Mass1p3to2p1Iso"):
+            process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltMergedTracks")
+
+
 def addHLTL1METTkMu50(process):
     if not hasattr(process, "hltL1sAllETMHFSeeds"):
         return process
@@ -1011,6 +1038,8 @@ def addHLTL1METTkMu50(process):
         process.hltTkMuFiltered50Q +
         process.HLTEndSequence
     )
+
+    process.schedule.extend([process.HLT_L1MET_TkMu50_v1])
 
     return process
 
