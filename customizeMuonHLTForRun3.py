@@ -865,13 +865,13 @@ def customizeIOSeedingPatatrack(
 		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
 		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_barrel.xml"),
-		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_endcap.xml"),
+		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_barrel_v2.xml"),
+		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_endcap_v2.xml"),
 
-		mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_barrel_ScaleMean") ),
-		mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_barrel_ScaleStd") ),
-		mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_endcap_ScaleMean") ),
-		mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_endcap_ScaleStd") ),
+		mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_barrel_v2_ScaleMean") ),
+		mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_barrel_v2_ScaleStd") ),
+		mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_endcap_v2_ScaleMean") ),
+		mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0_PatatrackSeeds_endcap_v2_ScaleStd") ),
 
 		doSort = cms.bool(doSort),
 		nSeedsMaxB = cms.int32(nSeedsMaxBs[0]),
@@ -888,13 +888,13 @@ def customizeIOSeedingPatatrack(
 		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
 		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
 
-		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel.xml"),
-		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap.xml"),
+		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_v2.xml"),
+		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_v2.xml"),
 
-		mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_ScaleMean") ),
-		mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_ScaleStd") ),
-		mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_ScaleMean") ),
-		mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_ScaleStd") ),
+		mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_v2_ScaleMean") ),
+		mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_v2_ScaleStd") ),
+		mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_v2_ScaleMean") ),
+		mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_v2_ScaleStd") ),
 
 		doSort = cms.bool(doSort),
 		nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
