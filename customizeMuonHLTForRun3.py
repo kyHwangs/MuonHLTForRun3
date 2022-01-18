@@ -1000,13 +1000,49 @@ def customizeTrkIsoFullHLTTracking(process):
             process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltMergedTracks")
 
 
-def addHLTL1METTkMu50(process):
+def addHLTL1METTkMu50(process, doQuadruplets = True):
     if not hasattr(process, "hltL1sAllETMHFSeeds"):
         return process
 
     if not hasattr(process, "HLTTrackerMuonSequence"):
         return process
 
+    # Use pixel quadruplets only
+    if doQuadruplets:
+        if not hasattr(process, "hltPixelTracksQuadruplets"):
+            process.hltPixelTracksQuadruplets = cms.EDProducer("TrackWithVertexSelector",
+                copyExtras = cms.untracked.bool(False),
+                copyTrajectories = cms.untracked.bool(False),
+                d0Max = cms.double(999.0),
+                dzMax = cms.double(999.0),
+                etaMax = cms.double(999.0),
+                etaMin = cms.double(-999.0),
+                nSigmaDtVertex = cms.double(0.0),
+                nVertices = cms.uint32(0),
+                normalizedChi2 = cms.double(999999.0),
+                numberOfLostHits = cms.uint32(999),
+                numberOfValidHits = cms.uint32(0),
+                numberOfValidPixelHits = cms.uint32(4),
+                ptErrorCut = cms.double(999999.0),
+                ptMax = cms.double(999999.0),
+                ptMin = cms.double(0.),
+                quality = cms.string('loose'),
+                rhoVtx = cms.double(999999.0),
+                src = cms.InputTag("hltPixelTracks"),
+                timeResosTag = cms.InputTag(""),
+                timesTag = cms.InputTag(""),
+                useVtx = cms.bool(False),
+                vertexTag = cms.InputTag("hltTrimmedPixelVertices"),
+                vtxFallback = cms.bool(False),
+                zetaVtx = cms.double(999999.0),
+            )
+
+        process.hltMuTrackSeeds.InputCollection = cms.InputTag("hltPixelTracksQuadruplets")
+
+        process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.HLTRecopixelvertexingSequence)
+        process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.hltPixelTracksQuadruplets)
+
+    # Filters and Path
     process.hltPreL1METTkMu50 = cms.EDFilter( "HLTPrescaler",
         L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
         offset = cms.uint32( 0 )
