@@ -1042,6 +1042,9 @@ def addHLTL1METTkMu50(process, doQuadruplets = True):
         process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.HLTRecopixelvertexingSequence)
         process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.hltPixelTracksQuadruplets)
 
+        process.HLTTrackerMuonSequenceNoVtx.insert(process.HLTTrackerMuonSequenceNoVtx.index(process.HLTDoLocalStripSequence), process.HLTRecopixelvertexingSequence)
+        process.HLTTrackerMuonSequenceNoVtx.insert(process.HLTTrackerMuonSequenceNoVtx.index(process.HLTDoLocalStripSequence), process.hltPixelTracksQuadruplets)
+
     # Filters and Path
     process.hltPreL1METTkMu50 = cms.EDFilter( "HLTPrescaler",
         L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
