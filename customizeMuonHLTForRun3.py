@@ -1079,7 +1079,57 @@ def addHLTL1METTkMu50(process, doQuadruplets = True):
         process.HLTEndSequence
     )
 
-    process.schedule.extend([process.HLT_L1MET_TkMu50_v1])
+    # TkMu + ID
+    process.hltGlbTrkMuonsID = cms.EDProducer("MuonIDFilterProducerForHLT",
+        allowedTypeMask = cms.uint32(0),
+        applyTriggerIdLoose = cms.bool(True),
+        inputMuonCollection = cms.InputTag("hltGlbTrkMuons"),
+        maxNormalizedChi2 = cms.double(9999.0),
+        minNMuonHits = cms.int32(0),
+        minNMuonStations = cms.int32(0),
+        minNTrkLayers = cms.int32(0),
+        minPixHits = cms.int32(0),
+        minPixLayer = cms.int32(0),
+        minPt = cms.double(0.0),
+        minTrkHits = cms.int32(0),
+        requiredTypeMask = cms.uint32(0),
+        typeMuon = cms.uint32(0)
+    )
+
+    process.hltGlbTrkMuonIDCands = cms.EDProducer("L3MuonCandidateProducerFromMuons",
+        InputObjects = cms.InputTag("hltGlbTrkMuonsID")
+    )
+
+    process.hltTkMuIDFiltered50Q = cms.EDFilter( "HLTMuonTrkL1TFilter",
+        maxNormalizedChi2 = cms.double( 1.0E99 ),
+        saveTags = cms.bool( True ),
+        maxAbsEta = cms.double( 1.0E99 ),
+        previousCandTag = cms.InputTag( "" ),
+        minPt = cms.double( 50.0 ),
+        minN = cms.uint32( 1 ),
+        inputCandCollection = cms.InputTag( "hltGlbTrkMuonIDCands" ),
+        minMuonStations = cms.int32( -1 ),
+        trkMuonId = cms.uint32( 0 ),
+        requiredTypeMask = cms.uint32( 0 ),
+        minMuonHits = cms.int32( -1 ),
+        minTrkHits = cms.int32( -1 ),
+        inputMuonCollection = cms.InputTag( "hltGlbTrkMuonsID" ),
+        allowedTypeMask = cms.uint32( 255 )
+    )
+
+    process.HLT_L1MET_TkMu50_ID_v1 = cms.Path(
+        process.HLTBeginSequence +
+        process.hltL1sAllETMHFSeeds +
+        process.hltPreL1METTkMu50 +
+        process.HLTL2muonrecoSequence +
+        process.HLTTrackerMuonSequence +
+        process.hltGlbTrkMuonsID +  # temporary, should be inside sequence/task
+        process.hltGlbTrkMuonIDCands +  # temporary, should be inside sequence/task
+        process.hltTkMuIDFiltered50Q +
+        process.HLTEndSequence
+    )
+
+    process.schedule.extend([process.HLT_L1MET_TkMu50_v1, process.HLT_L1MET_TkMu50_ID_v1])
 
     return process
 
