@@ -231,7 +231,7 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 	return process
 
 
-def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, newProcessName = "MYHLT"):
+def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False, newProcessName = "MYHLT"):
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
 		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
@@ -374,7 +374,7 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=True, 
 	return process
 
 
-def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=True, newProcessName = "MYHLT"):
+def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=False, newProcessName = "MYHLT"):
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
 		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
@@ -450,7 +450,7 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=True, newProcessName
 	return process
 
 
-def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=True, newProcessName = "MYHLT"):
+def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=False, newProcessName = "MYHLT"):
 	if not hasattr(process, "HLTL3muonrecoNocandSequenceNoVtx"):
 		return process
 
@@ -556,7 +556,7 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=True, newProcessNam
 	return process
 
 
-def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=True, newProcessName = "MYHLT"):
+def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=False, newProcessName = "MYHLT"):
 	if not hasattr(process, "HLTL3muonrecoNocandOpenMuSequence"):
 		return process
 
