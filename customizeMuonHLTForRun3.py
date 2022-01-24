@@ -1000,13 +1000,53 @@ def customizeTrkIsoFullHLTTracking(process):
             process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltMergedTracks")
 
 
-def addHLTL1METTkMu50(process):
+def addHLTL1METTkMu50(process, doQuadruplets = True):
     if not hasattr(process, "hltL1sAllETMHFSeeds"):
         return process
 
     if not hasattr(process, "HLTTrackerMuonSequence"):
         return process
 
+    # Use pixel quadruplets only
+    if doQuadruplets:
+        if not hasattr(process, "hltPixelTracksQuadruplets"):
+            process.hltPixelTracksQuadruplets = cms.EDProducer("TrackWithVertexSelector",
+                copyExtras = cms.untracked.bool(False),
+                copyTrajectories = cms.untracked.bool(False),
+                d0Max = cms.double(999.0),
+                dzMax = cms.double(999.0),
+                etaMax = cms.double(999.0),
+                etaMin = cms.double(-999.0),
+                nSigmaDtVertex = cms.double(0.0),
+                nVertices = cms.uint32(0),
+                normalizedChi2 = cms.double(999999.0),
+                numberOfLostHits = cms.uint32(999),
+                numberOfValidHits = cms.uint32(0),
+                numberOfValidPixelHits = cms.uint32(4),
+                ptErrorCut = cms.double(999999.0),
+                ptMax = cms.double(999999.0),
+                ptMin = cms.double(0.),
+                quality = cms.string('loose'),
+                rhoVtx = cms.double(999999.0),
+                src = cms.InputTag("hltPixelTracks"),
+                timeResosTag = cms.InputTag(""),
+                timesTag = cms.InputTag(""),
+                useVtx = cms.bool(False),
+                vertexTag = cms.InputTag("hltTrimmedPixelVertices"),
+                vtxFallback = cms.bool(False),
+                zetaVtx = cms.double(999999.0),
+            )
+
+        process.hltMuTrackSeeds.InputCollection = cms.InputTag("hltPixelTracksQuadruplets")
+
+        process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.HLTRecopixelvertexingSequence)
+        process.HLTTrackerMuonSequence.insert(process.HLTTrackerMuonSequence.index(process.HLTDoLocalStripSequence), process.hltPixelTracksQuadruplets)
+
+        if hasattr(process, "HLTTrackerMuonSequenceNoVtx"):
+            process.HLTTrackerMuonSequenceNoVtx.insert(process.HLTTrackerMuonSequenceNoVtx.index(process.HLTDoLocalStripSequence), process.HLTRecopixelvertexingSequence)
+            process.HLTTrackerMuonSequenceNoVtx.insert(process.HLTTrackerMuonSequenceNoVtx.index(process.HLTDoLocalStripSequence), process.hltPixelTracksQuadruplets)
+
+    # Filters and Path
     process.hltPreL1METTkMu50 = cms.EDFilter( "HLTPrescaler",
         L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
         offset = cms.uint32( 0 )
@@ -1039,7 +1079,62 @@ def addHLTL1METTkMu50(process):
         process.HLTEndSequence
     )
 
-    process.schedule.extend([process.HLT_L1MET_TkMu50_v1])
+    # TkMu + ID
+    process.hltGlbTrkMuonsID = cms.EDProducer("MuonIDFilterProducerForHLT",
+        allowedTypeMask = cms.uint32(0),
+        applyTriggerIdLoose = cms.bool(True),
+        inputMuonCollection = cms.InputTag("hltGlbTrkMuons"),
+        maxNormalizedChi2 = cms.double(9999.0),
+        minNMuonHits = cms.int32(0),
+        minNMuonStations = cms.int32(0),
+        minNTrkLayers = cms.int32(0),
+        minPixHits = cms.int32(0),
+        minPixLayer = cms.int32(0),
+        minPt = cms.double(0.0),
+        minTrkHits = cms.int32(0),
+        requiredTypeMask = cms.uint32(0),
+        typeMuon = cms.uint32(0)
+    )
+
+    process.hltGlbTrkMuonIDCands = cms.EDProducer("L3MuonCandidateProducerFromMuons",
+        InputObjects = cms.InputTag("hltGlbTrkMuonsID")
+    )
+
+    process.hltPreL1METTkMuID50 = cms.EDFilter( "HLTPrescaler",
+        L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
+        offset = cms.uint32( 0 )
+    )
+
+    process.hltTkMuIDFiltered50Q = cms.EDFilter( "HLTMuonTrkL1TFilter",
+        maxNormalizedChi2 = cms.double( 1.0E99 ),
+        saveTags = cms.bool( True ),
+        maxAbsEta = cms.double( 1.0E99 ),
+        previousCandTag = cms.InputTag( "" ),
+        minPt = cms.double( 50.0 ),
+        minN = cms.uint32( 1 ),
+        inputCandCollection = cms.InputTag( "hltGlbTrkMuonIDCands" ),
+        minMuonStations = cms.int32( -1 ),
+        trkMuonId = cms.uint32( 0 ),
+        requiredTypeMask = cms.uint32( 0 ),
+        minMuonHits = cms.int32( -1 ),
+        minTrkHits = cms.int32( -1 ),
+        inputMuonCollection = cms.InputTag( "hltGlbTrkMuonsID" ),
+        allowedTypeMask = cms.uint32( 255 )
+    )
+
+    process.HLT_L1MET_TkMu50_ID_v1 = cms.Path(
+        process.HLTBeginSequence +
+        process.hltL1sAllETMHFSeeds +
+        process.hltPreL1METTkMuID50 +
+        process.HLTL2muonrecoSequence +
+        process.HLTTrackerMuonSequence +
+        process.hltGlbTrkMuonsID +  # temporary, should be inside sequence/task
+        process.hltGlbTrkMuonIDCands +  # temporary, should be inside sequence/task
+        process.hltTkMuIDFiltered50Q +
+        process.HLTEndSequence
+    )
+
+    process.schedule.extend([process.HLT_L1MET_TkMu50_v1, process.HLT_L1MET_TkMu50_ID_v1])
 
     return process
 
