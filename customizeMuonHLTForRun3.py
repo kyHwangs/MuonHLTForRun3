@@ -1100,6 +1100,11 @@ def addHLTL1METTkMu50(process, doQuadruplets = True):
         InputObjects = cms.InputTag("hltGlbTrkMuonsID")
     )
 
+    process.hltPreL1METTkMuID50 = cms.EDFilter( "HLTPrescaler",
+        L1GtReadoutRecordTag = cms.InputTag( "hltGtStage2Digis" ),
+        offset = cms.uint32( 0 )
+    )
+
     process.hltTkMuIDFiltered50Q = cms.EDFilter( "HLTMuonTrkL1TFilter",
         maxNormalizedChi2 = cms.double( 1.0E99 ),
         saveTags = cms.bool( True ),
@@ -1120,7 +1125,7 @@ def addHLTL1METTkMu50(process, doQuadruplets = True):
     process.HLT_L1MET_TkMu50_ID_v1 = cms.Path(
         process.HLTBeginSequence +
         process.hltL1sAllETMHFSeeds +
-        process.hltPreL1METTkMu50 +
+        process.hltPreL1METTkMuID50 +
         process.HLTL2muonrecoSequence +
         process.HLTTrackerMuonSequence +
         process.hltGlbTrkMuonsID +  # temporary, should be inside sequence/task
