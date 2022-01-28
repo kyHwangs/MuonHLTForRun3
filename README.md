@@ -49,7 +49,6 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTF
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackOpenMu,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeIOSeedingPatatrack,\
-RecoMuon/TrackerSeedGenerator/customizeOIseeding.customizeOIseeding,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
  --input /store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
  --max-events 100 \
@@ -80,7 +79,6 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTF
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackOpenMu,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeIOSeedingPatatrack,\
-RecoMuon/TrackerSeedGenerator/customizeOIseeding.customizeOIseeding,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
  --input /store/mc/Run3Summer21DRPremix/WprimeToMuNu_M-5000_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/120X_mcRun3_2021_realistic_v6-v2/2550000/026722bd-ccc5-4da2-9295-13896532d7ab.root \
  --max-events 100 \
