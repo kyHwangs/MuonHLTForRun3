@@ -231,7 +231,7 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 	return process
 
 
-def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False, newProcessName = "MYHLT"):
+def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False, newProcessName = "MYHLT", IOROIFactor = 1.5):
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
 		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
@@ -281,6 +281,9 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False,
 		process.hltIterL3MuonPixelTracksTrackingRegions.Pt_min = cms.double( 0.0 )
 		process.hltIterL3MuonPixelTracksTrackingRegions.maxRegions = cms.int32( 5 )
 
+		# ROI size
+		process.hltIterL3MuonPixelTracksTrackingRegions.DeltaEta = cms.double( 0.2 * IOROIFactor )
+		process.hltIterL3MuonPixelTracksTrackingRegions.DeltaPhi = cms.double( 0.15 * IOROIFactor )
 
 		process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL2 )
 
@@ -311,6 +314,10 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False,
 
 		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.ptMin = cms.double( 0.0 )
 		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+
+		# ROI size
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaEta = cms.double( 0.35 * IOROIFactor )
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaPhi = cms.double( 0.2  * IOROIFactor )
 
 		process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL1 )
 
