@@ -1,7 +1,95 @@
 
 # CMS Run 3 Muon HLT
 
+## CMSSW_12_3_X
+
+### Setup
+```shell
+cmsrel CMSSW_12_3_0_pre4
+cd CMSSW_12_3_0_pre4/src
+cmsenv
+git cms-init
+
+git cms-merge-topic silviodonato:customizeHLTforRun3_v2
+# NOTE: some customizers are already integrated or not compatible any more
+
+# Add new training for inside-out seed cleaner
+git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git data_tmp
+cp data_tmp/xgb_*.xml RecoMuon/TrackerSeedGenerator/data
+rm -rf data_tmp
+
+# Add muon customizers and compile
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+### HLT menu for data
+```shell
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V17 \
+ --process MYHLT \
+ --eras Run3 \
+ --data --globaltag auto:run3_hlt \
+ --prescale 2.0e34+ZB+HLTPhysics \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu*,\
+HLT_Mu*,\
+HLT_DoubleMu*,\
+HLT_Dimuon*,\
+HLT_OldMu100_v*,\
+HLT_TkMu100_v*,\
+HLT_PFMET120_PFMHT120_IDTight_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --customise \
+HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackWithIsoAndTriplets,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackTkMu,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackOpenMu,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeIOSeedingPatatrack,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
+ --input /store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
+ --max-events 100 \
+ --full --offline --no-output >hlt_muon_data.py
+```
+
+### HLT menu for MC
+```shell
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V17 \
+ --process MYHLT \
+ --eras Run3 \
+ --mc --globaltag auto:phase1_2021_realistic \
+ --unprescale \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu*,\
+HLT_Mu*,\
+HLT_DoubleMu*,\
+HLT_Dimuon*,\
+HLT_OldMu100_v*,\
+HLT_TkMu100_v*,\
+HLT_PFMET120_PFMHT120_IDTight_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --customise \
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackWithIsoAndTriplets,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackTkMu,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackOpenMu,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeIOSeedingPatatrack,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
+ --input /store/mc/Run3Summer21DRPremix/WprimeToMuNu_M-5000_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/120X_mcRun3_2021_realistic_v6-v2/2550000/026722bd-ccc5-4da2-9295-13896532d7ab.root \
+ --max-events 100 \
+ --full --offline --no-output >hlt_muon_mc.py
+````
+
+
 ## CMSSW_12_1_X
+
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -20,6 +108,8 @@ git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configurati
 
 scram b -j 8
 ```
+</p>
+</details>
 
 
 ## CMSSW_12_0_X

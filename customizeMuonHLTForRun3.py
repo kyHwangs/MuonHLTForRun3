@@ -213,15 +213,15 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 
 	# L3 reconstruction
 	if hasattr(process, "hltL3MuonsIterL3OI"):
-		process.hltL3MuonsIterL3OI.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
+		process.hltL3MuonsIterL3OI.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag("hltGemRecHits" )
 		process.hltL3MuonsIterL3OI.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
 	if hasattr(process, "hltL3MuonsIterL3IO"):
-		process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
+		process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag("hltGemRecHits")
 		process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
 	if hasattr(process, "hltIterL3GlbMuon"):
-		process.hltIterL3GlbMuon.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag( "hltGemRecHits" )
+		process.hltIterL3GlbMuon.L3TrajBuilderParameters.GlbRefitterParameters.GEMRecHitLabel = cms.InputTag("hltGemRecHits")
 		process.hltIterL3GlbMuon.L3TrajBuilderParameters.GlbRefitterParameters.Chi2CutGEM = cms.double(1.0)
 
 	if hasattr(process, "hltIterL3MuonsNoID"):
@@ -231,8 +231,7 @@ def customizeMuonHLTForGEM(process, newProcessName = "MYHLT"):
 	return process
 
 
-def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False, newProcessName = "MYHLT"):
-	print (loadPatatrack)
+def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False, newProcessName = "MYHLT", IOROIFactor = 1.5):
 	if loadPatatrack:
     	# -- modify process to create patatrack pixel tracks and vertices
 		from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
@@ -279,27 +278,29 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False,
 
 		)
 
-		process.hltIterL3MuonPixelTracksTrackingRegions.Pt_min = cms.double( 0.0 )
-		process.hltIterL3MuonPixelTracksTrackingRegions.maxRegions = cms.int32( 5 )
+		process.hltIterL3MuonPixelTracksTrackingRegions.Pt_min = 0.0 
+		process.hltIterL3MuonPixelTracksTrackingRegions.maxRegions = 5 
 
+		# ROI size
+		process.hltIterL3MuonPixelTracksTrackingRegions.DeltaEta = 0.2 * IOROIFactor
+		process.hltIterL3MuonPixelTracksTrackingRegions.DeltaPhi = 0.15 * IOROIFactor
 
 		process.HLTIterL3MuonRecopixelvertexingSequence = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL2 )
 
-		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionL2")
-		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.includeFourthHit = cms.bool(True)
-		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag("hltTrimmedPixelVertices")
-		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag("")
+		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputCollection = "hltPixelTracksInRegionL2"
+		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.includeFourthHit = True
+		process.hltIter0IterL3MuonPixelSeedsFromPixelTracks.InputVertexCollection =  ""
 
 
 		process.HLTIterativeTrackingIteration0ForIterL3Muon = cms.Sequence( process.hltIter0IterL3MuonPixelSeedsFromPixelTracks + process.hltIter0IterL3MuonCkfTrackCandidates + process.hltIter0IterL3MuonCtfWithMaterialTracks + process.hltIter0IterL3MuonTrackCutClassifier + process.hltIter0IterL3MuonTrackSelectionHighPurity)
 
-		process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.tkTrajLabel = cms.InputTag("hltIter0IterL3MuonTrackSelectionHighPurity")
+		process.hltL3MuonsIterL3IO.L3TrajBuilderParameters.tkTrajLabel = "hltIter0IterL3MuonTrackSelectionHighPurity"
 
 		process.HLTIterL3IOmuonTkCandidateSequence = cms.Sequence( process.HLTIterL3MuonRecopixelvertexingSequence + process.HLTIterativeTrackingIteration0ForIterL3Muon + process.hltL3MuonsIterL3IO )
 
-		process.hltIter0IterL3MuonTrackCutClassifier.vertices = cms.InputTag("hltTrimmedPixelVertices")
-		process.hltIter0IterL3MuonTrackCutClassifier.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-		process.hltIter0IterL3MuonTrackCutClassifier.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+		process.hltIter0IterL3MuonTrackCutClassifier.vertices = "hltTrimmedPixelVertices"
+		process.hltIter0IterL3MuonTrackCutClassifier.mva.minPixelHits = [ 0, 0, 0 ]
+		process.hltIter0IterL3MuonTrackCutClassifier.mva.min3DLayers = [0, 0, 0 ]
 
 
 		process.hltPixelTracksInRegionL1 = cms.EDProducer("TrackSelectorByRegion",
@@ -310,36 +311,40 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False,
 
 		)
 
-		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.ptMin = cms.double( 0.0 )
-		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.ptMin = 0.0 
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.maxNRegions = 5 
+
+		# ROI size
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaEta = 0.35 * IOROIFactor
+		process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaPhi = 0.2  * IOROIFactor
 
 		process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegions + process.hltPixelTracksInRegionL1 )
 
-		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionL1")
-		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag("")
-		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.includeFourthHit = cms.bool(True)
+		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.InputCollection = "hltPixelTracksInRegionL1"
+		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.InputVertexCollection = ""
+		process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks.includeFourthHit = True
 
 
 		process.HLTIterativeTrackingIteration0ForIterL3FromL1Muon = cms.Sequence( process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks + process.hltIter0IterL3FromL1MuonCkfTrackCandidates + process.hltIter0IterL3FromL1MuonCtfWithMaterialTracks + process.hltIter0IterL3FromL1MuonTrackCutClassifier + process.hltIter0IterL3FromL1MuonTrackSelectionHighPurity )
 
 		process.HLTIterL3IOmuonFromL1TkCandidateSequence = cms.Sequence( process.HLTRecopixelvertexingSequenceForIterL3FromL1Muon + process.HLTIterativeTrackingIteration0ForIterL3FromL1Muon )
 
-		process.hltIter0IterL3FromL1MuonTrackCutClassifier.vertices = cms.InputTag("hltTrimmedPixelVertices")
-		process.hltIter0IterL3FromL1MuonTrackCutClassifier.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-		process.hltIter0IterL3FromL1MuonTrackCutClassifier.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+		process.hltIter0IterL3FromL1MuonTrackCutClassifier.vertices = "hltTrimmedPixelVertices"
+		process.hltIter0IterL3FromL1MuonTrackCutClassifier.mva.minPixelHits = [0, 0, 0]
+		process.hltIter0IterL3FromL1MuonTrackCutClassifier.mva.min3DLayers = [0, 0, 0]
 
 
-		process.hltIterL3MuonMerged.selectedTrackQuals = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurity','hltIter0IterL3MuonTrackSelectionHighPurity' )
-		process.hltIterL3MuonMerged.TrackProducers = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurity','hltIter0IterL3MuonTrackSelectionHighPurity' )
+		process.hltIterL3MuonMerged.selectedTrackQuals = ['hltIterL3OIMuonTrackSelectionHighPurity','hltIter0IterL3MuonTrackSelectionHighPurity']
+		process.hltIterL3MuonMerged.TrackProducers = ['hltIterL3OIMuonTrackSelectionHighPurity','hltIter0IterL3MuonTrackSelectionHighPurity']
 
-		process.hltIterL3MuonAndMuonFromL1Merged.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMerged','hltIter0IterL3FromL1MuonTrackSelectionHighPurity' )
-		process.hltIterL3MuonAndMuonFromL1Merged.TrackProducers = cms.VInputTag( 'hltIterL3MuonMerged','hltIter0IterL3FromL1MuonTrackSelectionHighPurity' )
+		process.hltIterL3MuonAndMuonFromL1Merged.selectedTrackQuals = ['hltIterL3MuonMerged','hltIter0IterL3FromL1MuonTrackSelectionHighPurity']
+		process.hltIterL3MuonAndMuonFromL1Merged.TrackProducers = ['hltIterL3MuonMerged','hltIter0IterL3FromL1MuonTrackSelectionHighPurity']
 
 		process.hltIterL3MuonsNoID.TrackExtractorPSet.inputTrackCollection = "hltIter0IterL3FromL1MuonTrackSelectionHighPurity"
 	# the tracker isolatin part
 	if hasattr(process, "HLTIterativeTrackingL3MuonIteration0"):
-		process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.ptMin = cms.double( 0.3 )
-		process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.vertexCollection = cms.InputTag( "hltPixelVertices" )
+		process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.ptMin = 0.3
+		process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.vertexCollection = "hltPixelVertices"
 
 		process.hltPixelTracksInRegionIter0L3Muon = cms.EDProducer("TrackSelectorByRegion",
 	          produceTrackCollection = cms.bool(True),
@@ -348,27 +353,27 @@ def customizeMuonHLTForPatatrackWithIsoAndTriplets(process, loadPatatrack=False,
 	          regions = cms.InputTag("hltPixelTracksTrackingRegionsForSeedsL3Muon")
 
 	        )
-		process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionIter0L3Muon")
-		process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag( "hltPixelVertices" )
-		process.hltIter0L3MuonTrackCutClassifier.vertices = cms.InputTag( "hltPixelVertices" )
+		process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputCollection = "hltPixelTracksInRegionIter0L3Muon"
+		process.hltIter0L3MuonPixelSeedsFromPixelTracks.InputVertexCollection = "hltPixelVertices"
+		process.hltIter0L3MuonTrackCutClassifier.vertices = "hltPixelVertices"
 
 		process.HLTIterativeTrackingL3MuonIteration0 = cms.Sequence( process.hltPixelTracksTrackingRegionsForSeedsL3Muon + process.hltPixelTracksInRegionIter0L3Muon + process.hltIter0L3MuonPixelSeedsFromPixelTracks + process.hltIter0L3MuonCkfTrackCandidates + process.hltIter0L3MuonCtfWithMaterialTracks + process.hltIter0L3MuonTrackCutClassifier + process.hltIter0L3MuonTrackSelectionHighPurity )
 
 		if hasattr(process, "HLTTrackReconstructionForIsoL3MuonIter02"):
 			process.HLTTrackReconstructionForIsoL3MuonIter02 = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingL3MuonIteration0 )
 			if hasattr(process, "hltMuonTkRelIsolationCut0p07Map"):
-				process.hltMuonTkRelIsolationCut0p07Map.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+				process.hltMuonTkRelIsolationCut0p07Map.TrkExtractorPSet.inputTrackCollection = "hltIter0L3MuonTrackSelectionHighPurity"
 			if hasattr(process, "hltL3MuonCombRelIsolationVVVL"):
-				process.hltL3MuonCombRelIsolationVVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+				process.hltL3MuonCombRelIsolationVVVL.TrkExtractorPSet.inputTrackCollection = "hltIter0L3MuonTrackSelectionHighPurity"
 
 		if hasattr(process, "HLTL3muontrkisorecoSequence"):
 			process.HLTL3muontrkisorecoSequence = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingL3MuonIteration0 )
 			if hasattr(process, "hltL3MuonRelTrkIsolationVVL"):
-				process.hltL3MuonRelTrkIsolationVVL.TrkExtractorPSet.inputTrackCollection = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+				process.hltL3MuonRelTrkIsolationVVL.TrkExtractorPSet.inputTrackCollection = "hltIter0L3MuonTrackSelectionHighPurity"
 			if hasattr(process, "hltTauPt15MuPts711Mass1p3to2p1IsoCharge1"):
-				process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+				process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = "hltIter0L3MuonTrackSelectionHighPurity"
 			if hasattr(process, "hltTauPt15MuPts711Mass1p3to2p1Iso"):
-				process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+				process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = "hltIter0L3MuonTrackSelectionHighPurity"
 
 	return process
 
@@ -420,12 +425,12 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=False, newProcessNam
 
 		)
 
-		process.hltIter0HighPtTkMuPixelTracksTrackingRegions.RegionPSet.ptMin = cms.double( 10.0 )
-		process.hltIter0HighPtTkMuPixelTracksTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+		process.hltIter0HighPtTkMuPixelTracksTrackingRegions.RegionPSet.ptMin = 10.0
+		process.hltIter0HighPtTkMuPixelTracksTrackingRegions.RegionPSet.maxNRegions = 5
 
 
-		process.hltIter0HighPtTkMuPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksInRegionTkMu")
-		process.hltIter0HighPtTkMuPixelSeedsFromPixelTracks.includeFourthHit = cms.bool(True)
+		process.hltIter0HighPtTkMuPixelSeedsFromPixelTracks.InputCollection = "hltPixelTracksInRegionTkMu"
+		process.hltIter0HighPtTkMuPixelSeedsFromPixelTracks.includeFourthHit = True
 
 		process.HLTIterativeTrackingHighPtTkMuIteration0 = cms.Sequence(process.hltIter0HighPtTkMuPixelTracksTrackingRegions + process.hltPixelTracksInRegionTkMu + process.hltIter0HighPtTkMuPixelSeedsFromPixelTracks + process.hltIter0HighPtTkMuCkfTrackCandidates + process.hltIter0HighPtTkMuCtfWithMaterialTracks + process.hltIter0HighPtTkMuTrackSelectionHighPurity )
 
@@ -433,15 +438,15 @@ def customizeMuonHLTForPatatrackTkMu(process, loadPatatrack=False, newProcessNam
 		process.HLTIterativeTrackingHighPtTkMu = cms.Sequence(process.HLTIterativeTrackingHighPtTkMuIteration0)
 
 	if hasattr(process, "hltHighPtTkMu50TkFilt"):
-		process.hltHighPtTkMu50TkFilt.src = cms.InputTag("hltIter0HighPtTkMuTrackSelectionHighPurity")
+		process.hltHighPtTkMu50TkFilt.src = "hltIter0HighPtTkMuTrackSelectionHighPurity"
 	if hasattr(process, "hltHighPtTkMuons"):
-		process.hltHighPtTkMuons.inputCollectionLabels = cms.VInputTag( 'hltIter0HighPtTkMuTrackSelectionHighPurity' )
+		process.hltHighPtTkMuons.inputCollectionLabels = ['hltIter0HighPtTkMuTrackSelectionHighPurity']
 
 
 	if hasattr(process, "HLTTrackerMuonSequenceLowPtIter0and1"):
 		process.HLTTrackerMuonSequenceLowPtIter0and1 = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingIteration0 + process.HLTL3muonrecoNocandSequence + process.hltDiMuonMergingIter01TkMu + process.hltDiMuonLinksIter01TkMuMerge + process.hltGlbTrkMuonsLowPtIter01Merge + process.hltGlbTrkMuonLowPtIter01MergeCands )
-		process.hltDiMuonMergingIter01TkMu.TrackProducers = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks' ) #probably unnecessary
-		process.hltDiMuonMergingIter01TkMu.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks' ) # "" 
+		process.hltDiMuonMergingIter01TkMu.TrackProducers = ['hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks'] #probably unnecessary
+		process.hltDiMuonMergingIter01TkMu.selectedTrackQuals = ['hltIterL3MuonAndMuonFromL1Merged','hltMergedTracks'] # "" 
 
 	if hasattr(process, "HLTTrackerMuonSequenceLowPt"):
 		process.HLTTrackerMuonSequenceLowPt = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingIteration0 + process.HLTL3muonrecoNocandSequence + process.hltDiMuonMergingIter01TkMu + process.hltDiMuonLinksIter01TkMuMerge + process.hltGlbTrkMuonsLowPtIter01Merge + process.hltGlbTrkMuonLowPtIter01MergeCands )
@@ -498,26 +503,26 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=False, newProcessNa
 
 	)
 
-	process.hltIterL3MuonPixelTracksTrackingRegionsNoVtx.Pt_min = cms.double( 0.0 )
+	process.hltIterL3MuonPixelTracksTrackingRegionsNoVtx.Pt_min = 0.0
 
 
 	process.HLTIterL3MuonRecoPixelTracksSequenceNoVtx = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegionsNoVtx + process.hltPixelTracksInRegionL2NoVtx )
 	process.HLTIterL3MuonRecopixelvertexingSequenceNoVtx = cms.Sequence( process.HLTIterL3MuonRecoPixelTracksSequenceNoVtx )
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.InputCollection = cms.InputTag("hltPixelTracksInRegionL2NoVtx")
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.includeFourthHit = cms.bool(True)
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.InputVertexCollection = cms.InputTag("")
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.InputCollection = "hltPixelTracksInRegionL2NoVtx"
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.includeFourthHit = True
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksNoVtx.InputVertexCollection = ""
 
 
 	process.HLTIterL3IOmuonTkCandidateSequenceNoVtx = cms.Sequence( process.HLTIterL3MuonRecopixelvertexingSequenceNoVtx + process.HLTIterativeTrackingIteration0ForIterL3MuonNoVtx + process.hltL3MuonsIterL3IONoVtx )
 
-	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.vertices = cms.InputTag("hltTrimmedPixelVertices")
-	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.vertices = "hltTrimmedPixelVertices"
+	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.mva.minPixelHits = [0, 0, 0]
+	process.hltIter0IterL3MuonTrackCutClassifierNoVtx.mva.min3DLayers = [0, 0, 0]
 
 
-	process.hltL3MuonsIterL3IONoVtx.L3TrajBuilderParameters.tkTrajLabel = cms.InputTag("hltIter0IterL3MuonTrackSelectionHighPurityNoVtx")
-	process.hltL3MuonsIterL3IONoVtx.L3TrajBuilderParameters.tkTrajVertex = cms.InputTag("hltTrimmedPixelVertices")
-	process.hltL3MuonsIterL3LinksNoVtx.InclusiveTrackerTrackCollection = cms.InputTag( "hltIter0IterL3MuonTrackSelectionHighPurityNoVtx" )
+	process.hltL3MuonsIterL3IONoVtx.L3TrajBuilderParameters.tkTrajLabel = "hltIter0IterL3MuonTrackSelectionHighPurityNoVtx"
+	process.hltL3MuonsIterL3IONoVtx.L3TrajBuilderParameters.tkTrajVertex = "hltTrimmedPixelVertices"
+	process.hltL3MuonsIterL3LinksNoVtx.InclusiveTrackerTrackCollection = "hltIter0IterL3MuonTrackSelectionHighPurityNoVtx" 
 
 	process.hltPixelTracksInRegionL1NoVtx = cms.EDProducer("TrackSelectorByRegion",
 	  produceTrackCollection = cms.bool(True),
@@ -527,30 +532,30 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=False, newProcessNa
 
 	)
 
-	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsNoVtx.RegionPSet.ptMin = cms.double( 0.0 )
-	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsNoVtx.RegionPSet.maxNRegions = cms.int32( 5 )
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsNoVtx.RegionPSet.ptMin = 0.0
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsNoVtx.RegionPSet.maxNRegions = 5
 
 	process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonNoVtx = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegionsNoVtx + process.hltPixelTracksInRegionL1NoVtx )
 
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.InputCollection = cms.InputTag("hltPixelTracksInRegionL1NoVtx")
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.InputVertexCollection = cms.InputTag("")
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.includeFourthHit = cms.bool(True)
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.InputCollection = "hltPixelTracksInRegionL1NoVtx"
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.InputVertexCollection = ""
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksNoVtx.includeFourthHit = True
 
 	process.HLTIterL3IOmuonFromL1TkCandidateSequenceNoVtx = cms.Sequence( process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonNoVtx + process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonNoVtx )
 
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.vertices = cms.InputTag("hltTrimmedPixelVertices")
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.vertices = "hltTrimmedPixelVertices"
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.mva.minPixelHits = [0, 0, 0]
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierNoVtx.mva.min3DLayers = [0, 0, 0 ]
 
 
-	process.hltIterL3MuonMergedNoVtx.selectedTrackQuals = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurityNoVtx','hltIter0IterL3MuonTrackSelectionHighPurityNoVtx' )
-	process.hltIterL3MuonMergedNoVtx.TrackProducers = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurityNoVtx','hltIter0IterL3MuonTrackSelectionHighPurityNoVtx' )
+	process.hltIterL3MuonMergedNoVtx.selectedTrackQuals = ['hltIterL3OIMuonTrackSelectionHighPurityNoVtx','hltIter0IterL3MuonTrackSelectionHighPurityNoVtx']
+	process.hltIterL3MuonMergedNoVtx.TrackProducers = ['hltIterL3OIMuonTrackSelectionHighPurityNoVtx','hltIter0IterL3MuonTrackSelectionHighPurityNoVtx']
 
-	process.hltIterL3MuonAndMuonFromL1MergedNoVtx.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMergedNoVtx','hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx' )
-	process.hltIterL3MuonAndMuonFromL1MergedNoVtx.TrackProducers = cms.VInputTag( 'hltIterL3MuonMergedNoVtx','hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx' )
+	process.hltIterL3MuonAndMuonFromL1MergedNoVtx.selectedTrackQuals = ['hltIterL3MuonMergedNoVtx','hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx']
+	process.hltIterL3MuonAndMuonFromL1MergedNoVtx.TrackProducers = ['hltIterL3MuonMergedNoVtx','hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx']
 
-	process.hltIterL3MuonsNoVtx.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx")
-	process.hltIterL3MuonsNoVtx.inputCollectionLabels = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1MergedNoVtx','hltL3MuonsIterL3LinksNoVtx' )
+	process.hltIterL3MuonsNoVtx.TrackExtractorPSet.inputTrackCollection = "hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx"
+	process.hltIterL3MuonsNoVtx.inputCollectionLabels = ['hltIterL3MuonAndMuonFromL1MergedNoVtx','hltL3MuonsIterL3LinksNoVtx']
 
 	return process
 
@@ -604,24 +609,24 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=False, newProcessN
 
 	)
 
-	process.hltIterL3MuonPixelTracksTrackingRegionsOpenMu.Pt_min = cms.double( 0.0 )
+	process.hltIterL3MuonPixelTracksTrackingRegionsOpenMu.Pt_min = 0.0
 
 
 	process.HLTIterL3MuonRecoPixelTracksOpenMuSequence = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3MuonPixelTracksTrackingRegionsOpenMu + process.hltPixelTracksInRegionL2OpenMu )
 
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.InputCollection = cms.InputTag("hltPixelTracksInRegionL2OpenMu")
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.includeFourthHit = cms.bool(True)
-	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.InputVertexCollection = cms.InputTag("")
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.InputCollection = "hltPixelTracksInRegionL2OpenMu"
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.includeFourthHit = True
+	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.InputVertexCollection = ""
 
-	process.hltL3MuonsIterL3IOOpenMu.L3TrajBuilderParameters.tkTrajLabel = cms.InputTag("hltIter0IterL3MuonTrackWithVertexSelectorOpenMu")
+	process.hltL3MuonsIterL3IOOpenMu.L3TrajBuilderParameters.tkTrajLabel = "hltIter0IterL3MuonTrackWithVertexSelectorOpenMu"
 
 	process.HLTIterativeTrackingIteration0ForIterL3MuonOpenMu = cms.Sequence( process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu + process.hltIter0IterL3MuonCkfTrackCandidatesOpenMu + process.hltIter0IterL3MuonCtfWithMaterialTracksOpenMu + process.hltIter0IterL3MuonTrackCutClassifierOpenMu + process.hltIter0IterL3MuonTrackSelectionHighPurityOpenMu)
 
 	process.HLTIterL3IOmuonTkCandidateOpenMuSequence = cms.Sequence( process.HLTIterL3MuonRecoPixelTracksOpenMuSequence + process.HLTIterativeTrackingIteration0ForIterL3MuonOpenMu + process.hltL3MuonsIterL3IOOpenMu )
 
-	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.vertices = cms.InputTag("hltTrimmedPixelVertices")
-	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.vertices = "hltTrimmedPixelVertices"
+	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.mva.minPixelHits = [0, 0, 0]
+	process.hltIter0IterL3MuonTrackCutClassifierOpenMu.mva.min3DLayers = [0, 0, 0]
 
 
 	process.hltPixelTracksInRegionL1OpenMu = cms.EDProducer("TrackSelectorByRegion",
@@ -632,33 +637,33 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=False, newProcessN
 
 	)
 
-	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsOpenMu.RegionPSet.ptMin = cms.double( 0.0 )
-	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsOpenMu.RegionPSet.maxNRegions = cms.int32( 5 )
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsOpenMu.RegionPSet.ptMin = 0.0
+	process.hltIterL3FromL1MuonPixelTracksTrackingRegionsOpenMu.RegionPSet.maxNRegions = 5
 
 	process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonOpenMu = cms.Sequence( process.HLTRecopixelvertexingSequence + process.hltIterL3FromL1MuonPixelTracksTrackingRegionsOpenMu + process.hltPixelTracksInRegionL1OpenMu )
 
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.InputCollection = cms.InputTag("hltPixelTracksInRegionL1OpenMu")
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.InputVertexCollection = cms.InputTag("")
-	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.includeFourthHit = cms.bool(True)
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.InputCollection = "hltPixelTracksInRegionL1OpenMu"
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.InputVertexCollection = ""
+	process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu.includeFourthHit = True
 
 
 	process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonOpenMu = cms.Sequence( process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu + process.hltIter0IterL3FromL1MuonCkfTrackCandidatesOpenMu + process.hltIter0IterL3FromL1MuonCtfWithMaterialTracksOpenMu + process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu + process.hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu )
 
 	process.HLTIterL3IOmuonFromL1TkCandidateSequenceOpenMu = cms.Sequence( process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonOpenMu + process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonOpenMu )
 
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.vertices = cms.InputTag("hltTrimmedPixelVertices")
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.mva.minPixelHits = cms.vint32( 0, 0, 0 )
-	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.mva.min3DLayers = cms.vint32( 0, 0, 0 )
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.vertices = "hltTrimmedPixelVertices"
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.mva.minPixelHits = [0, 0, 0]
+	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.mva.min3DLayers = [0, 0, 0]
 
 
-	process.hltIterL3MuonMergedOpenMu.selectedTrackQuals = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurityOpenMu','hltIter0IterL3MuonTrackSelectionHighPurityOpenMu' )
-	process.hltIterL3MuonMergedOpenMu.TrackProducers = cms.VInputTag( 'hltIterL3OIMuonTrackSelectionHighPurityOpenMu','hltIter0IterL3MuonTrackSelectionHighPurityOpenMu' )
+	process.hltIterL3MuonMergedOpenMu.selectedTrackQuals = ['hltIterL3OIMuonTrackSelectionHighPurityOpenMu','hltIter0IterL3MuonTrackSelectionHighPurityOpenMu']
+	process.hltIterL3MuonMergedOpenMu.TrackProducers = ['hltIterL3OIMuonTrackSelectionHighPurityOpenMu','hltIter0IterL3MuonTrackSelectionHighPurityOpenMu']
 
-	process.hltIterL3MuonAndMuonFromL1MergedOpenMu.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMergedOpenMu','hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu' )
-	process.hltIterL3MuonAndMuonFromL1MergedOpenMu.TrackProducers = cms.VInputTag( 'hltIterL3MuonMergedOpenMu','hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu' )
+	process.hltIterL3MuonAndMuonFromL1MergedOpenMu.selectedTrackQuals = ['hltIterL3MuonMergedOpenMu','hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu']
+	process.hltIterL3MuonAndMuonFromL1MergedOpenMu.TrackProducers = ['hltIterL3MuonMergedOpenMu','hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu']
 
-	process.hltIterL3MuonsOpenMu.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu")
-	process.hltIterL3MuonsOpenMu.inputCollectionLabels = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1MergedOpenMu','hltL3MuonsIterL3LinksOpenMu' )
+	process.hltIterL3MuonsOpenMu.TrackExtractorPSet.inputTrackCollection = "hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu"
+	process.hltIterL3MuonsOpenMu.inputCollectionLabels = ['hltIterL3MuonAndMuonFromL1MergedOpenMu','hltL3MuonsIterL3LinksOpenMu']
 
 	
 	return process
