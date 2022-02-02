@@ -559,6 +559,29 @@ def customizeMuonHLTForPatatrackNoVtx(process, loadPatatrack=False, newProcessNa
 	process.hltIterL3MuonsNoVtx.TrackExtractorPSet.inputTrackCollection = "hltIter0IterL3FromL1MuonTrackSelectionHighPurityNoVtx"
 	process.hltIterL3MuonsNoVtx.inputCollectionLabels = ['hltIterL3MuonAndMuonFromL1MergedNoVtx','hltL3MuonsIterL3LinksNoVtx']
 
+	# the tracker isolatin part
+	if hasattr(process, "HLTIterativeTrackingL3MuonIteration0NoVtx"):
+		process.hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx.RegionPSet.ptMin = 0.3
+		process.hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx.RegionPSet.vertexCollection = "hltPixelVertices"
+
+		process.hltPixelTracksInRegionIter0L3MuonNoVtx = cms.EDProducer("TrackSelectorByRegion",
+			  produceTrackCollection = cms.bool(True),
+			  produceMask = cms.bool(False),
+			  tracks = cms.InputTag("hltPixelTracks"),
+			  regions = cms.InputTag("hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx")
+
+			)
+		process.hltIter0L3MuonPixelSeedsFromPixelTracksNoVtx.InputCollection = "hltPixelTracksInRegionIter0L3MuonNoVtx"
+		process.hltIter0L3MuonPixelSeedsFromPixelTracksNoVtx.InputVertexCollection = "hltPixelVertices"
+		process.hltIter0L3MuonTrackCutClassifierNoVtx.vertices = "hltPixelVertices"
+
+		process.HLTIterativeTrackingL3MuonIteration0NoVtx = cms.Sequence( process.hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx + process.hltPixelTracksInRegionIter0L3MuonNoVtx + process.hltIter0L3MuonPixelSeedsFromPixelTracksNoVtx + process.hltIter0L3MuonCkfTrackCandidatesNoVtx + process.hltIter0L3MuonCtfWithMaterialTracksNoVtx + process.hltIter0L3MuonTrackCutClassifierNoVtx + process.hltIter0L3MuonTrackSelectionHighPurityNoVtx )
+
+		if hasattr(process, "HLTTrackReconstructionForIsoL3MuonIter02NoVtx"):
+			process.HLTTrackReconstructionForIsoL3MuonIter02NoVtx = cms.Sequence( process.HLTDoLocalPixelSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingL3MuonIteration0NoVtx )
+			if hasattr(process, "hltMuonTkRelIsolationCut0p09MapNoVtx"):
+				process.hltMuonTkRelIsolationCut0p09MapNoVtx.TrkExtractorPSet.inputTrackCollection = "hltIter0L3MuonTrackSelectionHighPurityNoVtx"
+
 	return process
 
 
