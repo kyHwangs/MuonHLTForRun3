@@ -790,9 +790,9 @@ def customizeIOSeedingPatatrack(
 		rejectAll = cms.bool(False),
 		isFromL1 = cms.bool(False),
 
-		src    = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracks", "", newProcessName),
-		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
-		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+		src    = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracks"),
+		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
+		L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
 
 		mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_barrel_v2.xml"),
 		mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0_PatatrackSeeds_endcap_v2.xml"),
@@ -813,9 +813,9 @@ def customizeIOSeedingPatatrack(
 		rejectAll = cms.bool(False),
 		isFromL1 = cms.bool(True),
 
-		src    = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks", "", newProcessName),
-		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon", newProcessName),
-		L2Muon = cms.InputTag("hltL2MuonCandidates", "", newProcessName),
+		src    = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks"),
+		L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
+		L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
 
 		mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_barrel_v2.xml"),
 		mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/xgb_Run3_Iter0FromL1_PatatrackSeeds_endcap_v2.xml"),
@@ -834,8 +834,8 @@ def customizeIOSeedingPatatrack(
 	)
 
 	# -- Track Candidates
-	process.hltIter0IterL3MuonCkfTrackCandidates.src       = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered", "", newProcessName)
-	process.hltIter0IterL3FromL1MuonCkfTrackCandidates.src = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered", "", newProcessName)
+	process.hltIter0IterL3MuonCkfTrackCandidates.src       = "hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered"
+	process.hltIter0IterL3FromL1MuonCkfTrackCandidates.src = "hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered"
 
 	# -- Sequences
 	process.HLTIterativeTrackingIteration0ForIterL3Muon = cms.Sequence(
