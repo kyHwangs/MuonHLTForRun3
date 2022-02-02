@@ -652,7 +652,7 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=False, newProcessN
 
 	process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonOpenMu = cms.Sequence( process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksOpenMu + process.hltIter0IterL3FromL1MuonCkfTrackCandidatesOpenMu + process.hltIter0IterL3FromL1MuonCtfWithMaterialTracksOpenMu + process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu + process.hltIter0IterL3FromL1MuonTrackSelectionHighPurityOpenMu )
 
-	process.HLTIterL3IOmuonFromL1TkCandidateSequenceOpenMu = cms.Sequence( process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonOpenMu + process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonOpenMu )
+	process.HLTIterL3IOmuonFromL1TkCandidateOpenMuSequence = cms.Sequence( process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonOpenMu + process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonOpenMu )
 
 	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.vertices = "hltTrimmedPixelVertices"
 	process.hltIter0IterL3FromL1MuonTrackCutClassifierOpenMu.mva.minPixelHits = [0, 0, 0]
