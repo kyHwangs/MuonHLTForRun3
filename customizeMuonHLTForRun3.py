@@ -620,7 +620,7 @@ def customizeMuonHLTForPatatrackOpenMu(process, loadPatatrack=False, newProcessN
 	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.includeFourthHit = True
 	process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu.InputVertexCollection = ""
 
-	process.hltL3MuonsIterL3IOOpenMu.L3TrajBuilderParameters.tkTrajLabel = "hltIter0IterL3MuonTrackWithVertexSelectorOpenMu"
+	process.hltL3MuonsIterL3IOOpenMu.L3TrajBuilderParameters.tkTrajLabel = "hltIter0IterL3MuonTrackSelectionHighPurityOpenMu"
 	process.hltL3MuonsIterL3IOOpenMu.L3TrajBuilderParameters.tkTrajVertex = "hltTrimmedPixelVertices"
 
 	process.HLTIterativeTrackingIteration0ForIterL3MuonOpenMu = cms.Sequence( process.hltIter0IterL3MuonPixelSeedsFromPixelTracksOpenMu + process.hltIter0IterL3MuonCkfTrackCandidatesOpenMu + process.hltIter0IterL3MuonCtfWithMaterialTracksOpenMu + process.hltIter0IterL3MuonTrackCutClassifierOpenMu + process.hltIter0IterL3MuonTrackSelectionHighPurityOpenMu)
