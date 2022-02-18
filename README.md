@@ -5,8 +5,8 @@
 
 ### Setup
 ```shell
-cmsrel CMSSW_12_3_0_pre4
-cd CMSSW_12_3_0_pre4/src
+cmsrel CMSSW_12_3_0_pre5
+cd CMSSW_12_3_0_pre5/src
 cmsenv
 git cms-init
 
@@ -26,7 +26,7 @@ scram b -j 8
 
 ### HLT menu for data
 ```shell
-hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V17 \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V29 \
  --process MYHLT \
  --eras Run3 \
  --data --globaltag auto:run3_hlt \
@@ -44,6 +44,7 @@ HLTriggerFinalPath,\
 HLTAnalyzerEndpath \
  --customise \
 HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input,\
+HLTrigger/Configuration/customizeHLTforPatatrack.customizeHLTforPatatrackTriplets,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackWithIsoAndTriplets,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackTkMu,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
@@ -57,7 +58,7 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50
 
 ### HLT menu for MC
 ```shell
-hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V17 \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V29 \
  --process MYHLT \
  --eras Run3 \
  --mc --globaltag auto:phase1_2021_realistic \
@@ -74,6 +75,7 @@ HLT_PFMET120_PFMHT120_IDTight_v*,\
 HLTriggerFinalPath,\
 HLTAnalyzerEndpath \
  --customise \
+HLTrigger/Configuration/customizeHLTforPatatrack.customizeHLTforPatatrackTriplets,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackWithIsoAndTriplets,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackTkMu,\
 HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.customizeMuonHLTForPatatrackNoVtx,\
