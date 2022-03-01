@@ -71,10 +71,10 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50
 ````
 
 
+### Setup (before patatrack integration)
 <details><summary> show </summary>
 <p>
 
-### Setup (before patatrack integration)
 ```shell
 cmsrel CMSSW_12_3_0_pre5
 cd CMSSW_12_3_0_pre5/src
