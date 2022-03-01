@@ -973,6 +973,22 @@ def customizeTrkIsoFullHLTTracking(process):
             process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltMergedTracks")
 
 
+def customizeIOROIs(process,
+                    IOROIL2FactorEta = 1.0,
+                    IOROIL2FactorPhi = 5.0,
+                    IOROIL1FactorEta = 1.0,
+                    IOROIL1FactorPhi = 5.0):
+    if hasattr(process, "hltIterL3MuonPixelTracksTrackingRegions"):
+        process.hltIterL3MuonPixelTracksTrackingRegions.DeltaEta = 0.2 * IOROIL2FactorEta
+        process.hltIterL3MuonPixelTracksTrackingRegions.DeltaPhi = 0.15 * IOROIL2FactorPhi
+
+    if hasattr(process, "hltIterL3FromL1MuonPixelTracksTrackingRegions"):
+        process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaEta = 0.35 * IOROIL1FactorEta
+        process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.deltaPhi = 0.2  * IOROIL1FactorPhi
+
+    return process
+
+
 def addHLTL1METTkMu50(process, doQuadruplets = True):
     if not hasattr(process, "hltL1sAllETMHFSeeds"):
         return process

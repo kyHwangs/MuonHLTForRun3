@@ -10,6 +10,77 @@ cd CMSSW_12_3_0_pre5/src
 cmsenv
 git cms-init
 
+# Add muon customizers and compile
+git cms-addpkg HLTrigger/Configuration
+git clone https://github.com/khaosmos93/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+### HLT menu for data
+```shell
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V36 \
+ --process MYHLT \
+ --eras Run3 \
+ --data --globaltag auto:run3_hlt \
+ --prescale 2.0e34+ZB+HLTPhysics \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu*,\
+HLT_Mu*,\
+HLT_DoubleMu*,\
+HLT_Dimuon*,\
+HLT_OldMu100_v*,\
+HLT_TkMu100_v*,\
+HLT_PFMET120_PFMHT120_IDTight_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --customise \
+HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input,\
+HLTrigger/Configuration/customizeHLTforPatatrack.customizeHLTforPatatrackTriplets,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
+ --input /store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/0244D183-F28D-2741-9DBF-1638BEDC734E.root \
+ --max-events 100 \
+ --full --offline --no-output >hlt_muon_data.py
+```
+
+### HLT menu for MC
+```shell
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun/V36 \
+ --process MYHLT \
+ --eras Run3 \
+ --mc --globaltag auto:phase1_2021_realistic \
+ --unprescale \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu*,\
+HLT_Mu*,\
+HLT_DoubleMu*,\
+HLT_Dimuon*,\
+HLT_OldMu100_v*,\
+HLT_TkMu100_v*,\
+HLT_PFMET120_PFMHT120_IDTight_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --customise \
+HLTrigger/Configuration/customizeHLTforPatatrack.customizeHLTforPatatrackTriplets,\
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50 \
+ --input /store/mc/Run3Summer21DRPremix/WprimeToMuNu_M-5000_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW/120X_mcRun3_2021_realistic_v6-v2/2550000/026722bd-ccc5-4da2-9295-13896532d7ab.root \
+ --max-events 100 \
+ --full --offline --no-output >hlt_muon_mc.py
+````
+
+
+<details><summary> show </summary>
+<p>
+
+### Setup (before patatrack integration)
+```shell
+cmsrel CMSSW_12_3_0_pre5
+cd CMSSW_12_3_0_pre5/src
+cmsenv
+git cms-init
+
 git cms-merge-topic silviodonato:customizeHLTforRun3_v2
 # NOTE: some customizers are already integrated or not compatible any more
 
@@ -86,6 +157,9 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50
  --max-events 100 \
  --full --offline --no-output >hlt_muon_mc.py
 ````
+
+</p>
+</details>
 
 
 ## CMSSW_12_1_X
