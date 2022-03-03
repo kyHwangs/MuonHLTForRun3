@@ -972,6 +972,160 @@ def customizeTrkIsoFullHLTTracking(process):
         if hasattr(process, "hltTauPt15MuPts711Mass1p3to2p1Iso"):
             process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltMergedTracks")
 
+    return process
+
+
+def customizeTrkIso(process, isoWPs = []):  # [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+    # override tracking parameters...
+    process.hltIter0L3MuonPixelSeedsFromPixelTracks = cms.EDProducer("SeedGeneratorFromProtoTracksEDProducer",
+        InputCollection = cms.InputTag("hltPixelTracksInRegionIter0L3Muon"),
+        InputVertexCollection = cms.InputTag( "hltTrimmedPixelVertices" ),
+        originHalfLength = cms.double( 0.3 ),
+        originRadius = cms.double( 0.1 ),
+        useProtoTrackKinematics = cms.bool( False ),
+        useEventsWithNoVertex = cms.bool( True ),
+        TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
+        usePV = cms.bool( False ),
+        includeFourthHit = cms.bool( True ),
+        SeedCreatorPSet = cms.PSet(  refToPSet_ = cms.string( "HLTSeedFromProtoTracks" ) )
+    )
+
+    process.hltIter0L3MuonCkfTrackCandidates = cms.EDProducer("CkfTrackCandidateMaker",
+        cleanTrajectoryAfterInOut = cms.bool( False ),
+        doSeedingRegionRebuilding = cms.bool( False ),
+        onlyPixelHitsForSeedCleaner = cms.bool( False ),
+        reverseTrajectories = cms.bool( False ),
+        useHitsSplitting = cms.bool( False ),
+        MeasurementTrackerEvent = cms.InputTag( "hltSiStripClusters" ),
+        src = cms.InputTag( "hltIter0L3MuonPixelSeedsFromPixelTracks" ),
+        clustersToSkip = cms.InputTag( "" ),
+        phase2clustersToSkip = cms.InputTag( "" ),
+        TrajectoryBuilderPSet = cms.PSet(  refToPSet_ = cms.string( "HLTIter0GroupedCkfTrajectoryBuilderIT" ) ),
+        TransientInitialStateEstimatorParameters = cms.PSet( 
+          propagatorAlongTISE = cms.string( "PropagatorWithMaterialParabolicMf" ),
+          numberMeasurementsForFit = cms.int32( 4 ),
+          propagatorOppositeTISE = cms.string( "PropagatorWithMaterialParabolicMfOpposite" )
+        ),
+        numHitsForSeedCleaner = cms.int32( 4 ),
+        NavigationSchool = cms.string( "SimpleNavigationSchool" ),
+        RedundantSeedCleaner = cms.string( "CachingSeedCleanerBySharedInput" ),
+        TrajectoryCleaner = cms.string( "hltESPTrajectoryCleanerBySharedHits" ),
+        maxNSeeds = cms.uint32( 100000 ),
+        maxSeedsBeforeCleaning = cms.uint32( 1000 )
+    )
+
+    process.hltIter0L3MuonCtfWithMaterialTracks = cms.EDProducer("TrackProducer",
+        useSimpleMF = cms.bool( True ),
+        SimpleMagneticField = cms.string( "ParabolicMf" ),
+        src = cms.InputTag( "hltIter0L3MuonCkfTrackCandidates" ),
+        clusterRemovalInfo = cms.InputTag( "" ),
+        beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
+        Fitter = cms.string( "hltESPFittingSmootherIT" ),
+        useHitsSplitting = cms.bool( False ),
+        alias = cms.untracked.string( "ctfWithMaterialTracks" ),
+        TrajectoryInEvent = cms.bool( False ),
+        TTRHBuilder = cms.string( "hltESPTTRHBWithTrackAngle" ),
+        AlgorithmName = cms.string( "hltIter0" ),
+        Propagator = cms.string( "hltESPRungeKuttaTrackerPropagator" ),
+        GeometricInnerState = cms.bool( True ),
+        NavigationSchool = cms.string( "" ),
+        MeasurementTracker = cms.string( "" ),
+        MeasurementTrackerEvent = cms.InputTag( "hltSiStripClusters" )
+    )
+
+    process.hltIter0L3MuonTrackCutClassifier = cms.EDProducer("TrackCutClassifier",
+        src = cms.InputTag( "hltIter0L3MuonCtfWithMaterialTracks" ),
+        beamspot = cms.InputTag( "hltOnlineBeamSpot" ),
+        vertices = cms.InputTag( "hltTrimmedPixelVertices" ),
+        ignoreVertices = cms.bool( False ),
+        qualityCuts = cms.vdouble( -0.7, 0.1, 0.7 ),
+        mva = cms.PSet( 
+          minPixelHits = cms.vint32( 0, 0, 0 ),
+          maxDzWrtBS = cms.vdouble( 3.40282346639E38, 24.0, 15.0 ),
+          dr_par = cms.PSet( 
+            d0err = cms.vdouble( 0.003, 0.003, 0.003 ),
+            dr_par2 = cms.vdouble( 3.40282346639E38, 0.6, 0.6 ),
+            dr_par1 = cms.vdouble( 3.40282346639E38, 0.8, 0.8 ),
+            dr_exp = cms.vint32( 4, 4, 4 ),
+            d0err_par = cms.vdouble( 0.001, 0.001, 0.001 )
+          ),
+          maxLostLayers = cms.vint32( 1, 1, 1 ),
+          min3DLayers = cms.vint32( 0, 0, 0 ),
+          dz_par = cms.PSet( 
+            dz_par1 = cms.vdouble( 3.40282346639E38, 0.75, 0.75 ),
+            dz_par2 = cms.vdouble( 3.40282346639E38, 0.5, 0.5 ),
+            dz_exp = cms.vint32( 4, 4, 4 )
+          ),
+          minNVtxTrk = cms.int32( 3 ),
+          maxDz = cms.vdouble( 0.5, 0.2, 3.40282346639E38 ),
+          minNdof = cms.vdouble( 1.0E-5, 1.0E-5, 1.0E-5 ),
+          maxChi2 = cms.vdouble( 9999.0, 25.0, 16.0 ),
+          maxChi2n = cms.vdouble( 1.2, 1.0, 0.7 ),
+          maxDr = cms.vdouble( 0.5, 0.03, 3.40282346639E38 ),
+          minLayers = cms.vint32( 3, 3, 3 )
+        )
+    )
+
+    process.hltIter0L3MuonTrackSelectionHighPurity = cms.EDProducer("TrackCollectionFilterCloner",
+        copyExtras = cms.untracked.bool(True),
+        copyTrajectories = cms.untracked.bool(False),
+        minQuality = cms.string('highPurity'),
+        originalMVAVals = cms.InputTag("hltIter0L3MuonTrackCutClassifier","MVAValues"),
+        originalQualVals = cms.InputTag("hltIter0L3MuonTrackCutClassifier","QualityMasks"),
+        originalSource = cms.InputTag("hltIter0L3MuonCtfWithMaterialTracks")
+    )
+
+    if len(isoWPs) > 0:
+        # IMPORTANT: only works without prescale
+        process.HLT_IsoMu24_base = cms.Sequence(
+            process.HLTBeginSequence+
+            process.hltL1sSingleMu22+
+            process.hltPreIsoMu24+
+            process.hltL1fL1sMu22L1Filtered0+
+            process.HLTL2muonrecoSequence+
+            cms.ignore(process.hltL2fL1sSingleMu22L1f0L2Filtered10Q)+
+            process.HLTL3muonrecoSequence+
+            cms.ignore(process.hltL1fForIterL3L1fL1sMu22L1Filtered0)+
+            process.hltL3fL1sSingleMu22L1f0L2f10QL3Filtered24Q+
+
+            # process.HLTMu24IsolationSequence+
+            process.HLTL3muonEcalPFisorecoSequenceNoBoolsForMuons+
+            process.hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3pfecalIsoRhoFilteredEB0p14EE0p10+
+            process.HLTL3muonHcalPFisorecoSequenceNoBoolsForMuons+
+            process.hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3pfhcalIsoRhoFilteredHB0p16HE0p20+
+            process.HLTTrackReconstructionForIsoL3MuonIter02
+
+            # process.hltMuonTkRelIsolationCut0p07Map+
+            # process.hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07+
+
+            # process.HLTEndSequence
+        )
+
+        for cut in cuts:
+            mod = process.hltMuonTkRelIsolationCut0p07Map.clone()
+            mod.CutsPSet.Thresholds = cms.vdouble(cut)
+            modname = "hltMuonTkRelIsolationCut%.2fMapTmp" % cut
+            modname = modname.replace(".", "p")
+            setattr(process,modname,mod)
+
+            filt = process.hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07.clone()
+            filt.DepTag = cms.VInputTag(modname)
+            filtname = "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered%.2fTmp" % cut
+            filtname = filtname.replace(".", "p")
+            setattr(process,filtname,filt)
+
+            path = cms.Path(process.HLT_IsoMu24_base)
+            path.insert(1, getattr(process, modname))
+            path.insert(2, getattr(process, filtname))
+            path.insert(3, process.HLTEndSequence)
+            pathname = "HLT_IsoMu24_trkIso%.2f_vTmp" % cut
+            pathname = pathname.replace(".", "p")
+            setattr(process,pathname,path)
+
+            process.schedule.extend([getattr(process, pathname)])
+
+    return process
+
 
 def customizeIOROIs(process,
                     IOROIL2FactorEta = 1.0,
