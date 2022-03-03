@@ -975,7 +975,7 @@ def customizeTrkIsoFullHLTTracking(process):
     return process
 
 
-def customizeTrkIso(process, isoWPs = []):  # [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
+def customizeTrkIso(process, nRegionsFactor = 1, isoWPs = []):  # [0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
     # override tracking parameters...
     process.hltIter0L3MuonPixelSeedsFromPixelTracks = cms.EDProducer("SeedGeneratorFromProtoTracksEDProducer",
         InputCollection = cms.InputTag("hltPixelTracksInRegionIter0L3Muon"),
@@ -1075,6 +1075,11 @@ def customizeTrkIso(process, isoWPs = []):  # [0.03, 0.04, 0.05, 0.06, 0.07, 0.0
         originalSource = cms.InputTag("hltIter0L3MuonCtfWithMaterialTracks")
     )
 
+    # update ROIs
+    process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.maxNVertices = cms.int32( 1 * nRegionsFactor )
+    process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.maxNRegions  = cms.int32( 10 * nRegionsFactor )
+
+    # scan tracker iso WPs
     if len(isoWPs) > 0:
         # IMPORTANT: only works without prescale
         process.HLT_IsoMu24_base = cms.Sequence(
