@@ -1106,7 +1106,7 @@ def customizeTrkIso(process, nRegionsFactor = 1, isoWPs = []):  # [0.03, 0.04, 0
             # process.HLTEndSequence
         )
 
-        for cut in cuts:
+        for cut in isoWPs:
             mod = process.hltMuonTkRelIsolationCut0p07Map.clone()
             mod.CutsPSet.Thresholds = cms.vdouble(cut)
             modname = "hltMuonTkRelIsolationCut%.2fMapTmp" % cut
