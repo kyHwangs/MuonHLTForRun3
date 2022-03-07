@@ -1270,19 +1270,24 @@ def addHLTL1METTkMu50(process, doQuadruplets = True):
         allowedTypeMask = cms.uint32( 255 )
     )
 
+    process.HLTTrackerMuonIDSequence = cms.Sequence(
+        process.HLTTrackerMuonSequence +
+        process.hltGlbTrkMuonsID +
+        process.hltGlbTrkMuonIDCands
+    )
+
     process.HLT_L1MET_TkMu50_ID_v1 = cms.Path(
         process.HLTBeginSequence +
         process.hltL1sAllETMHFSeeds +
         process.hltPreL1METTkMuID50 +
         process.HLTL2muonrecoSequence +
-        process.HLTTrackerMuonSequence +
-        process.hltGlbTrkMuonsID +  # temporary, should be inside sequence/task
-        process.hltGlbTrkMuonIDCands +  # temporary, should be inside sequence/task
+        process.HLTTrackerMuonIDSequence +
         process.hltTkMuIDFiltered50Q +
         process.HLTEndSequence
     )
 
-    process.schedule.extend([process.HLT_L1MET_TkMu50_v1, process.HLT_L1MET_TkMu50_ID_v1])
+    process.schedule.extend([process.HLT_L1MET_TkMu50_ID_v1])
+    # process.schedule.extend([process.HLT_L1MET_TkMu50_v1, process.HLT_L1MET_TkMu50_ID_v1])
 
     return process
 
