@@ -1233,8 +1233,8 @@ def customizeTrkIsoNoVtx(process, nRegionsFactor = 1):  # [0.03, 0.04, 0.05, 0.0
     )
 
     # update ROIs
-    process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.maxNVertices = cms.int32( 1 * nRegionsFactor )
-    process.hltPixelTracksTrackingRegionsForSeedsL3Muon.RegionPSet.maxNRegions  = cms.int32( 10 * nRegionsFactor )
+    process.hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx.RegionPSet.maxNVertices = cms.int32( 1 * nRegionsFactor )
+    process.hltPixelTracksTrackingRegionsForSeedsL3MuonNoVtx.RegionPSet.maxNRegions  = cms.int32( 10 * nRegionsFactor )
 
     return process
 
