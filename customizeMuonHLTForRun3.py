@@ -2,7 +2,26 @@ import FWCore.ParameterSet.Config as cms
 
 from HLTrigger.Configuration.common import *
 
-def customizeIOSeedingPatatrack_v3(
+def enableDoubletRecoveryInMuon(process):
+
+    if not hasattr(process, "hltDoubletRecoveryClustersRefRemoval"):
+        return process
+
+    # IO from L2
+
+
+
+    # IO from L1
+
+    return process
+
+
+## To-do
+# Add Doublet Recovery in trk iso in IsoMu24
+# Synchronize trk selection of IO and PF Tracking
+
+# If needed, new IO BDT training using "the extended Patatrack pixeltracks"
+def customizeIOSeedingPatatrack_v4(
         process, newProcessName = "MYHLT",
         doSort = False,
         nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
