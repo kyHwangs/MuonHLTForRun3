@@ -4,7 +4,7 @@ from HLTrigger.Configuration.common import *
 
 def enableDoubletRecoveryInMuon(process):
 
-    if not hasattr(process, "hltDoubletRecoveryClustersRefRemoval"):
+    if not hasattr(process, "HLTIterativeTrackingDoubletRecovery"):
         return process
 
     # IO from L2
@@ -13,13 +13,70 @@ def enableDoubletRecoveryInMuon(process):
 
     # IO from L1
 
+
+
+    # without ROI - just use tracks from the Doublet Recovery -> almost no timing increase? or maybe in MuonProducer?
+    process.hltIterL3MuonAndMuonFromL1AndDoubletRecoveryMerged = cms.EDProducer( "TrackListMerger",
+        ShareFrac = cms.double( 0.19 ),
+        FoundHitBonus = cms.double( 5.0 ),
+        LostHitPenalty = cms.double( 20.0 ),
+        MinPT = cms.double( 0.05 ),
+        Epsilon = cms.double( -0.001 ),
+        MaxNormalizedChisq = cms.double( 1000.0 ),
+        MinFound = cms.int32( 3 ),
+        TrackProducers = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltDoubletRecoveryPFlowTrackSelectionHighPurity' ),
+        hasSelector = cms.vint32( 0, 0 ),
+        indivShareFrac = cms.vdouble( 1.0, 1.0 ),
+        selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1Merged','hltDoubletRecoveryPFlowTrackSelectionHighPurity' ),
+        setsToMerge = cms.VPSet(
+          cms.PSet(  pQual = cms.bool( False ),
+            tLists = cms.vint32( 0, 1 )
+          )
+        ),
+        trackAlgoPriorityOrder = cms.string( "hltESPTrackAlgoPriorityOrder" ),
+        allowFirstHitShare = cms.bool( True ),
+        newQuality = cms.string( "confirmed" ),
+        copyExtras = cms.untracked.bool( True ),
+        writeOnlyTrkQuals = cms.bool( False ),
+        copyMVA = cms.bool( False )
+    )
+
+    process.hltIterL3GlbMuon.L3TrajBuilderParameters.tkTrajLabel =  cms.InputTag( "hltIterL3MuonAndMuonFromL1AndDoubletRecoveryMerged" )
+    process.hltIterL3MuonsNoID.inputCollectionLabels = cms.VInputTag( 'hltIterL3MuonAndMuonFromL1AndDoubletRecoveryMerged','hltIterL3GlbMuon','hltL2Muons:UpdatedAtVtx' )
+    process.hltIterL3MuonTracks.track = cms.InputTag( "hltIterL3MuonAndMuonFromL1AndDoubletRecoveryMerged" )
+
+    process.HLTL3muonrecoNocandSequence = cms.Sequence(
+        process.HLTIterL3muonTkCandidateSequence +
+        process.hltIterL3MuonMerged +
+        process.hltIterL3MuonAndMuonFromL1Merged +
+        process.hltIterL3MuonAndMuonFromL1AndDoubletRecoveryMerged + ## HERE
+        process.hltIterL3GlbMuon +
+        process.hltIterL3MuonsNoID +
+        process.hltIterL3Muons +
+        process.hltL3MuonsIterL3Links +
+        process.hltIterL3MuonTracks
+    )
+
+    process.HLTIterL3muonTkCandidateSequence = cms.Sequence(
+        process.HLTDoLocalPixelSequence +
+        process.HLTDoLocalStripSequence +
+        process.HLTIterativeTrackingIteration0 + ## HERE
+        process.HLTIterativeTrackingDoubletRecovery + ## HERE
+        process.HLTIterL3OIAndIOFromL2muonTkCandidateSequence +
+        process.hltL1MuonsPt0 +
+        process.HLTIterL3IOmuonFromL1TkCandidateSequence
+    )
+
     return process
 
 
 ## To-do
+# Timing comparison : Using ROI vs. not using ROI - don't need to do trajectory building, but maybe more consuming at hltIterL3GlbMuon?
+# Are there any ROI modules in cms-sw that selecting trks, instead of PixelSeeds?
+
+# Further check is needed if our changes proppagate to all relavant muon Paths such as displacedMuons, etc...
 # Add Doublet Recovery in trk iso in IsoMu24
 # Synchronize trk selection of IO and PF Tracking
-
 # If needed, new IO BDT training using "the extended Patatrack pixeltracks"
 def customizeIOSeedingPatatrack_v4(
         process, newProcessName = "MYHLT",
