@@ -285,7 +285,7 @@ def enableDoubletRecoveryInMuon(process):
 
     process.hltIterL3MuonAndMuonFromL1Merged.TrackProducers = cms.VInputTag( 'hltIterL3MuonMerged','hltIter03IterL3FromL1MuonMerged' )
     process.hltIterL3MuonAndMuonFromL1Merged.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMerged','hltIter03IterL3FromL1MuonMerged' )
-    process.hltIterL3MuonsNoID.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPurity" )
+    process.hltIterL3MuonsNoID.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter03IterL3FromL1MuonMerged" )
 
     process.HLTIterativeTrackingIteration3ForIterL3FromL1Muon = cms.Sequence(
         process.hltIter3IterL3FromL1MuonClustersRefRemoval +
