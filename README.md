@@ -1,7 +1,53 @@
 
 # CMS Run 3 Muon HLT
 
+## CMSSW_13_2_X
+
+### Setup
+```shell
+export SCRAM_ARCH=slc7_amd64_gcc10
+cmsrel CMSSW_13_2_6
+cd CMSSW_13_2_6/src
+cmsenv
+git cms-init
+
+git cms-addpkg HLTrigger/Configuration
+git clone -b Run2024 https://github.com/wonpoint4/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+### HLT menu for Data 2022, 2023 - no L1 emul
+```shell
+hltGetConfiguration /dev/CMSSW_13_2_0/GRun \
+ --process MYHLT \
+ --data --globaltag 132X_dataRun3_HLT_v2 \
+ --unprescale \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu24_v*,\
+HLT_Mu50_v*,\
+HLT_CascadeMu100_v*,\
+HLT_HighPtTkMu100_v*,\
+HLT_Mu15_v*,\
+HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --input /store/data/Run2023D/Muon0/RAW-RECO/ZMu-PromptReco-v2/000/370/772/00000/edf3f5f9-ca18-4985-bf2e-7aac083ec70e.root \
+ --eras Run3 \
+ --max-events -1 \
+ --customise \
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.enableDoubletRecoveryInMuon \
+ --full --offline --no-output >hlt_muon_data.py
+```
+
+### HLT menu for MC
+```shell
+```
+
 ## CMSSW_12_3_X
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -70,6 +116,8 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.addHLTL1METTkMu50
  --full --offline --no-output >hlt_muon_mc.py
 ````
 
+</p>
+</details>
 
 ### Setup (before patatrack integration)
 <details><summary> show </summary>
