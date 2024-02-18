@@ -128,7 +128,7 @@ def enableDoubletRecoveryInIOFromL2(process):
 
     process.hltIter3IterL3MuonPixelClusterCheck = cms.EDProducer( "ClusterCheckerEDProducer",
     doClusterCheck = cms.bool( False ),
-    MaxNumberOfCosmicClusters = cms.uint32( 50000 ),
+    MaxNumberOfStripClusters = cms.uint32( 50000 ),
     ClusterCollectionLabel = cms.InputTag( "hltMeasurementTrackerEvent" ),
     MaxNumberOfPixelClusters = cms.uint32( 40000 ),
     PixelClusterCollectionLabel = cms.InputTag( "hltSiPixelClusters" ),
@@ -465,7 +465,7 @@ def enableDoubletRecoveryInIOFromL1(process):
 
     process.hltIter3IterL3FromL1MuonPixelClusterCheck = cms.EDProducer( "ClusterCheckerEDProducer",
     doClusterCheck = cms.bool( False ),
-    MaxNumberOfCosmicClusters = cms.uint32( 50000 ),
+    MaxNumberOfStripClusters = cms.uint32( 50000 ),
     ClusterCollectionLabel = cms.InputTag( "hltMeasurementTrackerEvent" ),
     MaxNumberOfPixelClusters = cms.uint32( 40000 ),
     PixelClusterCollectionLabel = cms.InputTag( "hltSiPixelClusters" ),
