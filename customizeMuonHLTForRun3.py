@@ -336,8 +336,20 @@ def enableFullIter3FromL1(process):
       'FPix1_pos+FPix3_pos',
       'FPix1_neg+FPix3_neg',
       'FPix2_pos+FPix3_pos',
-      'FPix2_neg+FPix3_neg' ),
+      'FPix2_neg+FPix3_neg' )
 
-    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaEtas = cms.vdouble( 0.35, 0.35, 0.35, 0.35 ),
-    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaPhis = cms.vdouble( 1.0, 0.8, 0.6, 0.3 ),
-    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaEtas = cms.vdouble( 0.35, 0.35, 0.35, 0.35 )
+    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaPhis = cms.vdouble( 1.0, 0.8, 0.6, 0.3 )
+    #process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+
+    return process
+
+# To maximize the signal seeds of Iter3FromL1, only for training
+def disableClustersRefRemoval(process):
+
+    if not hasattr(process, "hltIter3IterL3FromL1MuonClustersRefRemoval"):
+        return process
+
+    process.hltIter3IterL3FromL1MuonClustersRefRemoval.trajectories = cms.InputTag( "hltIter0IterL3MuonTrackSelectionHighPurity" )
+
+    return process
