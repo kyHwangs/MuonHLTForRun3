@@ -78,8 +78,8 @@ def enableDoubletRecoveryInIOFromL1(process):
     MTEC = cms.PSet(  )
     )
 
-   ## pt-dep ROI - from Run3 (hltIterL3FromL1MuonPixelTracksTrackingRegions)
-   process.hltIter3IterL3FromL1MuonTrackingRegions = cms.EDProducer( "L1MuonSeededTrackingRegionsEDProducer",
+    ## pt-dep ROI - from Run3 (hltIterL3FromL1MuonPixelTracksTrackingRegions)
+    process.hltIter3IterL3FromL1MuonTrackingRegions = cms.EDProducer( "L1MuonSeededTrackingRegionsEDProducer",
     Propagator = cms.string( "SteppingHelixPropagatorAny" ),
     L1MinPt = cms.double( 0.0 ),
     L1MaxEta = cms.double( 2.5 ),
