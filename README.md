@@ -1,7 +1,71 @@
-
 # CMS Run 3 Muon HLT
 
+## CMSSW_14_0_X
+
+### Setup
+```shell
+export SCRAM_ARCH=el9_amd64_gcc11
+cmsrel CMSSW_14_0_0
+cd CMSSW_14_0_0/src
+cmsenv
+git cms-init
+
+git cms-addpkg HLTrigger/Configuration
+git clone -b Run2024 https://github.com/wonpoint4/MuonHLTForRun3.git HLTrigger/Configuration/python/MuonHLTForRun3
+
+scram b -j 8
+```
+
+### HLT menu for Data 2022, 2023 - uGT L1 emul
+```shell
+hltGetConfiguration /dev/CMSSW_14_0_0/GRun \
+ --process MYHLT \
+ --data --globaltag 140X_dataRun3_HLT_for2024TSGStudies_v1 \
+ --unprescale \
+ --paths \
+HLTriggerFirstPath,\
+HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*,\
+HLT_IsoMu24_v*,\
+HLT_Mu50_v*,\
+HLT_CascadeMu100_v*,\
+HLT_HighPtTkMu100_v*,\
+HLT_Mu15_v*,\
+HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --input /store/data/Run2023D/Muon0/RAW-RECO/ZMu-PromptReco-v2/000/370/772/00000/edf3f5f9-ca18-4985-bf2e-7aac083ec70e.root \
+ --eras Run3 --l1-emulator uGT --l1 L1Menu_Collisions2023_v1_3_0_xml \
+ --max-events -1 \
+ --customise \
+HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.enableDoubletRecoveryInIOFromL1 \
+ --full --offline --no-output >hlt_muon_data.py
+```
+
+### HLT menu for MC Winter24
+```shell
+hltGetConfiguration /dev/CMSSW_14_0_0/GRun \
+ --process MYHLT \
+ --mc --globaltag auto:phase1_2024_realistic \
+ --unprescale \
+ --paths \
+HLTriggerFirstPath,\
+HLT_IsoMu24_v*,\
+HLT_Mu50_v*,\
+HLT_CascadeMu100_v*,\
+HLT_HighPtTkMu100_v*,\
+HLT_Mu15_v*,\
+HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*,\
+HLTriggerFinalPath,\
+HLTAnalyzerEndpath \
+ --input /store/mc/Run3Winter24Reco/DYTo2L_MLL-50_TuneCP5_13p6TeV_pythia8/AODSIM/KeepSi_133X_mcRun3_2024_realistic_v8-v2/50000/1066aeda-aac7-43ef-9599-f531496d32fd.root \
+ --eras Run3 \
+ --max-events 1000 \
+ --full --offline --no-output >hlt_muon_mc.py
+```
+
 ## CMSSW_13_2_X
+<details><summary> show </summary>
+<p>
 
 ### Setup
 ```shell
@@ -44,6 +108,9 @@ HLTrigger/Configuration/MuonHLTForRun3/customizeMuonHLTForRun3.enableDoubletReco
 ### HLT menu for MC
 ```shell
 ```
+
+</p>
+</details>
 
 ## CMSSW_12_3_X
 <details><summary> show </summary>
