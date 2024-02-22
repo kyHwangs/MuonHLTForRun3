@@ -360,6 +360,7 @@ def disablePixelHitsOI(process):
         return process
 
     process.hltIterL3OIMuonTrackCutClassifier.mva.minPixelHits = cms.vint32(0, 0, 0)
+    process.hltIterL3OIMuonTrackCutClassifierCPUOnly.mva.minPixelHits = cms.vint32(0, 0, 0)
 
     return process
 
