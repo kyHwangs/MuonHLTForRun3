@@ -660,7 +660,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     process.hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly = cms.EDProducer( "TrackClusterRemover",
         trajectories = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPurityCPUOnly" ),
         trackClassifier = cms.InputTag( '','QualityMasks' ),
-        pixelClusters = cms.InputTag( "hltSiPixelClusters" ),
+        pixelClusters = cms.InputTag( "hltSiPixelClustersLegacy" ),
         stripClusters = cms.InputTag( "hltSiStripRawToClustersFacility" ),
         oldClusterRemovalInfo = cms.InputTag( "" ),
         TrackQuality = cms.string( "highPurity" ),
@@ -694,8 +694,8 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
       precise = cms.bool( True ),
       zErrorVertex = cms.double( 0.03 )
     ),
-    inactivePixelDetectorLabels = cms.VInputTag( 'hltSiPixelDigis' ),
-    badPixelFEDChannelCollectionLabels = cms.VInputTag( 'hltSiPixelDigis' ),
+    inactivePixelDetectorLabels = cms.VInputTag( 'hltSiPixelDigisLegacy' ),
+    badPixelFEDChannelCollectionLabels = cms.VInputTag( 'hltSiPixelDigisLegacy' ),
     ignoreSingleFPixPanelModules = cms.bool( True ),
     debug = cms.untracked.bool( False ),
     createPlottingFiles = cms.untracked.bool( False ),
@@ -710,7 +710,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
       skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly" ),
       useErrorsFromParam = cms.bool( True ),
       hitErrorRZ = cms.double( 0.006 ),
-      HitProducer = cms.string( "hltSiPixelRecHits" )
+      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacyCPUOnly" )
     ),
     FPix = cms.PSet(
       hitErrorRPhi = cms.double( 0.0051 ),
@@ -718,7 +718,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
       skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly" ),
       useErrorsFromParam = cms.bool( True ),
       hitErrorRZ = cms.double( 0.0036 ),
-      HitProducer = cms.string( "hltSiPixelRecHits" )
+      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacyCPUOnly" )
     ),
     TIB = cms.PSet(  ),
     TID = cms.PSet(  ),
@@ -770,7 +770,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     MaxNumberOfStripClusters = cms.uint32( 50000 ),
     ClusterCollectionLabel = cms.InputTag( "hltMeasurementTrackerEventCPUOnly" ),
     MaxNumberOfPixelClusters = cms.uint32( 40000 ),
-    PixelClusterCollectionLabel = cms.InputTag( "hltSiPixelClusters" ),
+    PixelClusterCollectionLabel = cms.InputTag( "hltSiPixelClustersLegacy" ),
     cut = cms.string( "" ),
     silentClusterCheck = cms.untracked.bool( False )
     )
