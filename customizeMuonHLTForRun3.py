@@ -350,7 +350,39 @@ def disableClustersRefRemoval(process):
     if not hasattr(process, "hltIter3IterL3FromL1MuonClustersRefRemoval"):
         return process
 
-    process.hltIter3IterL3FromL1MuonClustersRefRemoval.trajectories = cms.InputTag( "hltIter0IterL3MuonTrackSelectionHighPurity" )
+    process.hltIter3IterL3FromL1MuonPixelLayersAndRegions.RegionPSet.measurementTrackerName = cms.InputTag( "hltMeasurementTrackerEvent" )
+    process.hltIter3IterL3FromL1MuonPixelLayersAndRegions.BPix = cms.PSet(
+      hitErrorRPhi = cms.double( 0.0027 ),
+      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
+      #skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemoval" ),
+      useErrorsFromParam = cms.bool( True ),
+      hitErrorRZ = cms.double( 0.006 ),
+      HitProducer = cms.string( "hltSiPixelRecHits" )
+    )
+    process.hltIter3IterL3FromL1MuonPixelLayersAndRegions.FPix = cms.PSet(
+      hitErrorRPhi = cms.double( 0.0051 ),
+      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
+      #skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemoval" ),
+      useErrorsFromParam = cms.bool( True ),
+      hitErrorRZ = cms.double( 0.0036 ),
+      HitProducer = cms.string( "hltSiPixelRecHits" )
+    )
+    process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.measurementTrackerName = cms.InputTag( "hltMeasurementTrackerEvent" )
+    process.hltIter3IterL3FromL1MuonCkfTrackCandidates.MeasurementTrackerEvent = cms.InputTag( "hltMeasurementTrackerEvent" )
+    process.hltIter3IterL3FromL1MuonCtfWithMaterialTracks.MeasurementTrackerEvent = cms.InputTag( "hltMeasurementTrackerEvent" )
+    process.HLTIterativeTrackingIteration3ForIterL3FromL1Muon = cms.Sequence(
+        #process.hltIter3IterL3FromL1MuonClustersRefRemoval +
+        #process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEvent +
+        process.hltIter3IterL3FromL1MuonPixelLayersAndRegions +
+        process.hltIter3IterL3FromL1MuonTrackingRegions + # HERE
+        process.hltIter3IterL3FromL1MuonPixelClusterCheck +
+        process.hltIter3IterL3FromL1MuonPixelHitDoublets +
+        process.hltIter3IterL3FromL1MuonPixelSeeds +
+        process.hltIter3IterL3FromL1MuonCkfTrackCandidates +
+        process.hltIter3IterL3FromL1MuonCtfWithMaterialTracks +
+        process.hltIter3IterL3FromL1MuonTrackCutClassifier +
+        process.hltIter3IterL3FromL1MuonTrackSelectionHighPurity
+    )
 
     return process
 
