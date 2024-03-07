@@ -398,6 +398,47 @@ def disablePixelHitsOI(process):
 
     return process
 
+def enableChainingIOfromL1(process):
+
+    process.hltIterL3MuonL1MuonNoL2Selector = cms.EDProducer( "HLTL1MuonNoL2Selector",
+      InputObjects = cms.InputTag( 'hltGtStage2Digis','Muon' ),
+      L2CandTag = cms.InputTag( "hltL2MuonCandidates" ),
+      SeedMapTag = cms.InputTag( "hltL2Muons" ),
+      L1MinPt = cms.double( -1.0 ),
+      L1MaxEta = cms.double( 5.0 ),
+      L1MinQuality = cms.uint32( 7 ),
+      CentralBxOnly = cms.bool( True )
+    )
+    process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegions"):
+        process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+    process.HLTIterL3muonTkCandidateSequence = cms.Sequence(
+        process.HLTDoLocalPixelSequence +
+        process.HLTDoLocalStripSequence +
+        process.HLTIterL3OIAndIOFromL2muonTkCandidateSequence +
+        process.hltL1MuonsPt0 +
+        process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+        process.HLTIterL3IOmuonFromL1TkCandidateSequence
+    )
+
+    ## CPUOnly
+    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly"):
+        process.hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+    process.HLTIterL3muonTkCandidateCPUOnlySequence = cms.Sequence(
+        process.HLTDoLocalPixelCPUOnlySequence +
+        process.HLTDoLocalStripCPUOnlySequence +
+        process.HLTIterL3OIAndIOFromL2muonTkCandidateCPUOnlySequence +
+        process.hltL1MuonsPt0 +
+        process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+        process.HLTIterL3IOmuonFromL1TkCandidateCPUOnlySequence
+    )
+
+    return process
+
+
 ### Iter3 in NoVtx
 def enableDoubletRecoveryInIOFromL1forNoVtx(process):
 
