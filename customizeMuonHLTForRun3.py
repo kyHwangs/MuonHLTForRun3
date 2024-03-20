@@ -529,6 +529,7 @@ def enableDoubletRecoveryInIOFromL1forNoVtx(process):
       beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
       deltaEtas = cms.vdouble( 0.175, 0.175, 0.175, 0.175 ), # HERE
       deltaPhis = cms.vdouble( 0.5, 0.4, 0.3, 0.15 ), # HERE
+      ptRanges = cms.vdouble( 0.0, 10.0, 15.0, 20.0, 1.0E64 ), # HERE
       input = cms.InputTag( "hltIterL3MuonL1MuonNoL2SelectorNoVtx" ),
       maxNRegions = cms.int32( 3 ), # HERE
       maxNVertices = cms.int32( 1 ), # HERE
