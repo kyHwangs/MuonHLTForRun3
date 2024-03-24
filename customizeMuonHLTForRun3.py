@@ -431,14 +431,14 @@ def enableChainingIOfromL1(process):
     if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly"):
         process.hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
 
-    process.HLTIterL3muonTkCandidateCPUOnlySequence = cms.Sequence(
-        process.HLTDoLocalPixelCPUOnlySequence +
-        process.HLTDoLocalStripCPUOnlySequence +
-        process.HLTIterL3OIAndIOFromL2muonTkCandidateCPUOnlySequence +
-        process.hltL1MuonsPt0 +
-        process.hltIterL3MuonL1MuonNoL2Selector + # HERE
-        process.HLTIterL3IOmuonFromL1TkCandidateCPUOnlySequence
-    )
+        process.HLTIterL3muonTkCandidateCPUOnlySequence = cms.Sequence(
+            process.HLTDoLocalPixelCPUOnlySequence +
+            process.HLTDoLocalStripCPUOnlySequence +
+            process.HLTIterL3OIAndIOFromL2muonTkCandidateCPUOnlySequence +
+            process.hltL1MuonsPt0 +
+            process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+            process.HLTIterL3IOmuonFromL1TkCandidateCPUOnlySequence
+        )
 
     return process
 
