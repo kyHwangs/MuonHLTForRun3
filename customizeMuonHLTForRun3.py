@@ -1028,3 +1028,208 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
 
     return process
 
+def customizeIOSeedingPatatrack_v4(
+        process, newProcessName = "MYHLT",
+        doSort = False,
+        nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
+        mvaCutBs = (0.04, 0.04), mvaCutEs = (0.04, 0.04)):
+
+        if not hasattr(process, "HLTIterativeTrackingIteration0ForIterL3Muon") or\
+           not hasattr(process, "HLTIterativeTrackingIteration0ForIterL3FromL1Muon"):
+                return process
+
+        import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
+
+        # -- Seed MVA Classifiers
+        process.hltIter0IterL3MuonPixelSeedsFromPixelTracksFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+                rejectAll = cms.bool(False),
+                isFromL1 = cms.bool(False),
+
+                src    = cms.InputTag("hltIter0IterL3MuonPixelSeedsFromPixelTracks"),
+                L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
+                L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
+
+                mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2FromL1.xml"),
+                mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Endcap_hltIter2FromL1.xml"),
+
+                mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2FromL1_ScaleMean") ),
+                mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2FromL1_ScaleStd") ),
+                mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2FromL1_ScaleMean") ),
+                mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2FromL1_ScaleStd") ),
+
+                mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+                mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+
+                mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleMean") ),
+                mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleStd") ),
+                mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleMean") ),
+                mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleStd") ),
+
+                doSort = cms.bool(doSort),
+                nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
+                nSeedsMaxE = cms.int32(nSeedsMaxEs[1]),
+
+                mvaCutB = cms.double(mvaCutBs[1]),
+                mvaCutE = cms.double(mvaCutEs[1])
+        )
+        process.hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracksFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+                rejectAll = cms.bool(False),
+                isFromL1 = cms.bool(True),
+
+                src    = cms.InputTag("hltIter0IterL3FromL1MuonPixelSeedsFromPixelTracks"),
+                L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
+                L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
+
+                mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2FromL1.xml"),
+                mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Endcap_hltIter2FromL1.xml"),
+
+                mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2FromL1_ScaleMean") ),
+                mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2FromL1_ScaleStd") ),
+                mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2FromL1_ScaleMean") ),
+                mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2FromL1_ScaleStd") ),
+
+                mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+                mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+
+                mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleMean") ),
+                mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleStd") ),
+                mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleMean") ),
+                mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleStd") ),
+
+                doSort = cms.bool(doSort),
+                nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
+                nSeedsMaxE = cms.int32(nSeedsMaxEs[1]),
+
+                mvaCutB = cms.double(mvaCutBs[1]),
+                mvaCutE = cms.double(mvaCutEs[1])
+        )
+
+        return process
+
+def customizeIOSeedingPatatrack_withIter3FromL1_wp00(
+        process, newProcessName = "MYHLT",
+        doSort = False,
+        nSeedsMaxBs = (99999, 99999), nSeedsMaxEs = (99999, 99999),
+        mvaCutBs = (0.00, 0.00), mvaCutEs = (0.00, 0.00)):
+
+        if not hasattr(process, "HLTIterativeTrackingIteration3ForIterL3FromL1Muon"):
+                return process
+
+        import HLTrigger.Configuration.MuonHLTForRun3.mvaScale as _mvaScale
+
+        # -- Recover full pixel layerList, and ROI parameters
+        process.hltIter3IterL3FromL1MuonPixelLayersAndRegions.layerList = cms.vstring( 'BPix1+BPix2',
+            'BPix1+BPix3',
+            'BPix1+BPix4',
+            'BPix2+BPix3',
+            'BPix2+BPix4',
+            'BPix3+BPix4',
+            'BPix1+FPix1_pos',
+            'BPix1+FPix1_neg',
+            'BPix1+FPix2_pos',
+            'BPix1+FPix2_neg',
+            'BPix1+FPix3_pos',
+            'BPix1+FPix3_neg',
+            'BPix2+FPix1_pos',
+            'BPix2+FPix1_neg',
+            'BPix2+FPix2_pos',
+            'BPix2+FPix2_neg',
+            'BPix3+FPix1_pos',
+            'BPix3+FPix1_neg',
+            'FPix1_pos+FPix2_pos',
+            'FPix1_neg+FPix2_neg',
+            'FPix1_pos+FPix3_pos',
+            'FPix1_neg+FPix3_neg',
+            'FPix2_pos+FPix3_pos',
+            'FPix2_neg+FPix3_neg' )
+
+        #process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaEtas = cms.vdouble( 0.35, 0.35, 0.35, 0.35 )
+        #process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.deltaPhis = cms.vdouble( 1.0, 0.8, 0.6, 0.3 )
+        #process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.maxNRegions = cms.int32( 5 )
+
+        # -- Seed MVA Classifiers
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered = cms.EDProducer("MuonHLTSeedMVAClassifier",
+                rejectAll = cms.bool(False),
+                isFromL1 = cms.bool(True),
+
+                src    = cms.InputTag("hltIter3IterL3FromL1MuonPixelSeeds"),
+                L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
+                L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
+
+                mvaFileBL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter3FromL1.xml"),
+                mvaFileEL1 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Endcap_hltIter3FromL1.xml"),
+
+                mvaScaleMeanBL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter3FromL1_ScaleMean") ),
+                mvaScaleStdBL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter3FromL1_ScaleStd") ),
+                mvaScaleMeanEL1 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter3FromL1_ScaleMean") ),
+                mvaScaleStdEL1  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter3FromL1_ScaleStd") ),
+
+                mvaFileBL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+                mvaFileEL2 = cms.FileInPath("RecoMuon/TrackerSeedGenerator/data/Run2024_DYJpsi_Barrel_hltIter2.xml"),
+
+                mvaScaleMeanBL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleMean") ),
+                mvaScaleStdBL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Barrel_NThltIter2_ScaleStd") ),
+                mvaScaleMeanEL2 = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleMean") ),
+                mvaScaleStdEL2  = cms.vdouble( getattr(_mvaScale, "Run2024_DYJpsi_Endcap_NThltIter2_ScaleStd") ),
+
+                doSort = cms.bool(doSort),
+                nSeedsMaxB = cms.int32(nSeedsMaxBs[1]),
+                nSeedsMaxE = cms.int32(nSeedsMaxEs[1]),
+
+                mvaCutB = cms.double(mvaCutBs[1]),
+                mvaCutE = cms.double(mvaCutEs[1])
+        )
+        process.hltIter3IterL3FromL1MuonCkfTrackCandidates.src = cms.InputTag( "hltIter3IterL3FromL1MuonPixelSeedsFiltered" )
+
+        process.HLTIterativeTrackingIteration3ForIterL3FromL1Muon = cms.Sequence(
+            process.hltIter3IterL3FromL1MuonClustersRefRemoval +
+            process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEvent +
+            process.hltIter3IterL3FromL1MuonPixelLayersAndRegions +
+            process.hltIter3IterL3FromL1MuonTrackingRegions +
+            process.hltIter3IterL3FromL1MuonPixelClusterCheck +
+            process.hltIter3IterL3FromL1MuonPixelHitDoublets +
+            process.hltIter3IterL3FromL1MuonPixelSeeds +
+	    process.hltIter3IterL3FromL1MuonPixelSeedsFiltered + # HERE
+            process.hltIter3IterL3FromL1MuonCkfTrackCandidates +
+            process.hltIter3IterL3FromL1MuonCtfWithMaterialTracks +
+            process.hltIter3IterL3FromL1MuonTrackCutClassifier +
+            process.hltIter3IterL3FromL1MuonTrackSelectionHighPurity
+        )
+
+        return process
+
+def customizeIOSeedingPatatrack_withIter3FromL1_wp01(process):
+        if not hasattr(process, "HLTIterativeTrackingIteration3ForIterL3FromL1Muon"):
+                return process
+
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutB = cms.double(0.01)
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutE = cms.double(0.01)
+
+        return process
+
+def customizeIOSeedingPatatrack_withIter3FromL1_wp04(process):
+        if not hasattr(process, "HLTIterativeTrackingIteration3ForIterL3FromL1Muon"):
+                return process
+
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutB = cms.double(0.04)
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutE = cms.double(0.04)
+
+        return process
+
+def customizeIOSeedingPatatrack_withIter3FromL1_wp10(process):
+        if not hasattr(process, "HLTIterativeTrackingIteration3ForIterL3FromL1Muon"):
+                return process
+
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutB = cms.double(0.10)
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutE = cms.double(0.10)
+
+        return process
+
+def customizeIOSeedingPatatrack_withIter3FromL1_wp20(process):
+        if not hasattr(process, "HLTIterativeTrackingIteration3ForIterL3FromL1Muon"):
+                return process
+
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutB = cms.double(0.20)
+        process.hltIter3IterL3FromL1MuonPixelSeedsFiltered.mvaCutE = cms.double(0.20)
+
+        return process
