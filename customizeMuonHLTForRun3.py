@@ -1148,7 +1148,7 @@ def enableBDTwithIter3FromL1(
                 rejectAll = cms.bool(False),
                 isFromL1 = cms.bool(True),
 
-                src    = cms.InputTag("hltIter3IterL3FromL1MuonPixelSeeds"),
+                src    = cms.InputTag("hltIter3IterL3FromL1MuonPixelSeedsSerialSync"),
                 L1Muon = cms.InputTag("hltGtStage2Digis", "Muon"),
                 L2Muon = cms.InputTag("hltL2MuonCandidates", ""),
 
@@ -1167,7 +1167,7 @@ def enableBDTwithIter3FromL1(
                 mvaCutB = cms.double(mvaCutBs[1]),
                 mvaCutE = cms.double(mvaCutEs[1])
         )
-        process.hltIter3IterL3FromL1MuonCkfTrackCandidatesSerialSync.src = cms.InputTag( "hltIter3IterL3FromL1MuonPixelSeedsFiltered" )
+        process.hltIter3IterL3FromL1MuonCkfTrackCandidatesSerialSync.src = cms.InputTag( "hltIter3IterL3FromL1MuonPixelSeedsFilteredSerialSync" )
 
         process.HLTIterativeTrackingIteration3ForIterL3FromL1MuonSerialSync = cms.Sequence(
             process.hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync +
