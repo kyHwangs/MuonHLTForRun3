@@ -394,11 +394,11 @@ def disablePixelHitsOI(process):
     process.hltIterL3OIMuonTrackCutClassifier.mva.minPixelHits = cms.vint32(0, 0, 0)
     process.hltIterL3OIMuonTrackCutClassifier.mva.min3DLayers = cms.vint32(0, 0, 0)
 
-    if not hasattr(process, "hltIterL3OIMuonTrackCutClassifierCPUOnly"):
+    if not hasattr(process, "hltIterL3OIMuonTrackCutClassifierSerialSync"):
         return process
 
-    process.hltIterL3OIMuonTrackCutClassifierCPUOnly.mva.minPixelHits = cms.vint32(0, 0, 0)
-    process.hltIterL3OIMuonTrackCutClassifierCPUOnly.mva.min3DLayers = cms.vint32(0, 0, 0)
+    process.hltIterL3OIMuonTrackCutClassifierSerialSync.mva.minPixelHits = cms.vint32(0, 0, 0)
+    process.hltIterL3OIMuonTrackCutClassifierSerialSync.mva.min3DLayers = cms.vint32(0, 0, 0)
 
     return process
 
@@ -428,16 +428,16 @@ def enableChainingIOfromL1(process):
     )
 
     ## CPUOnly
-    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly"):
-        process.hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsSerialSync"):
+        process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
 
-        process.HLTIterL3muonTkCandidateCPUOnlySequence = cms.Sequence(
-            process.HLTDoLocalPixelCPUOnlySequence +
-            process.HLTDoLocalStripCPUOnlySequence +
-            process.HLTIterL3OIAndIOFromL2muonTkCandidateCPUOnlySequence +
+        process.HLTIterL3muonTkCandidateSequenceSerialSync = cms.Sequence(
+            process.HLTDoLocalPixelSequenceSerialSync +
+            process.HLTDoLocalStripSequenceSerialSync +
+            process.HLTIterL3OIAndIOFromL2muonTkCandidateSequenceSerialSync +
             process.hltL1MuonsPt0 +
             process.hltIterL3MuonL1MuonNoL2Selector + # HERE
-            process.HLTIterL3IOmuonFromL1TkCandidateCPUOnlySequence
+            process.HLTIterL3IOmuonFromL1TkCandidateSequenceSerialSync
         )
 
     return process
@@ -735,10 +735,10 @@ def enableDoubletRecoveryInIOFromL1forNoVtx(process):
     return process
 
 ### Iter3 with CPUOnly
-def enableDoubletRecoveryInIOFromL1CPUOnly(process):
+def enableDoubletRecoveryInIOFromL1SerialSync(process):
 
-    process.hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly = cms.EDProducer( "TrackClusterRemover",
-        trajectories = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPurityCPUOnly" ),
+    process.hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync = cms.EDProducer( "TrackClusterRemover",
+        trajectories = cms.InputTag( "hltIter0IterL3FromL1MuonTrackSelectionHighPuritySerialSync" ),
         trackClassifier = cms.InputTag( '','QualityMasks' ),
         pixelClusters = cms.InputTag( "hltSiPixelClustersLegacy" ),
         stripClusters = cms.InputTag( "hltSiStripRawToClustersFacility" ),
@@ -749,15 +749,15 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
         overrideTrkQuals = cms.InputTag( "" )
     )
 
-    process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly = cms.EDProducer( "MaskedMeasurementTrackerEventProducer",
-    src = cms.InputTag( "hltMeasurementTrackerEventCPUOnly" ),
+    process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync = cms.EDProducer( "MaskedMeasurementTrackerEventProducer",
+    src = cms.InputTag( "hltMeasurementTrackerEventSerialSync" ),
     OnDemand = cms.bool( False ),
-    clustersToSkip = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly" )
+    clustersToSkip = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync" )
     )
 
-    process.hltIter3IterL3FromL1MuonPixelLayersAndRegionsCPUOnly = cms.EDProducer( "PixelInactiveAreaTrackingRegionsSeedingLayersProducer",
+    process.hltIter3IterL3FromL1MuonPixelLayersAndRegionsSerialSync = cms.EDProducer( "PixelInactiveAreaTrackingRegionsSeedingLayersProducer",
     RegionPSet = cms.PSet(
-      vertexCollection = cms.InputTag( "hltTrimmedPixelVerticesCPUOnly" ),
+      vertexCollection = cms.InputTag( "hltTrimmedPixelVerticesSerialSync" ),
       beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
       zErrorBeamSpot = cms.double( 15.0 ),
       extraPhi = cms.double( 0.0 ),
@@ -770,7 +770,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
       searchOpt = cms.bool( False ),
       whereToUseMeasurementTracker = cms.string( "ForSiStrips" ),
       originRadius = cms.double( 0.015 ),
-      measurementTrackerName = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly" ),
+      measurementTrackerName = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync" ),
       precise = cms.bool( True ),
       zErrorVertex = cms.double( 0.03 )
     ),
@@ -787,18 +787,18 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     BPix = cms.PSet(
       hitErrorRPhi = cms.double( 0.0027 ),
       TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-      skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly" ),
+      skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync" ),
       useErrorsFromParam = cms.bool( True ),
       hitErrorRZ = cms.double( 0.006 ),
-      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacyCPUOnly" )
+      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacySerialSync" )
     ),
     FPix = cms.PSet(
       hitErrorRPhi = cms.double( 0.0051 ),
       TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-      skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly" ),
+      skipClusters = cms.InputTag( "hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync" ),
       useErrorsFromParam = cms.bool( True ),
       hitErrorRZ = cms.double( 0.0036 ),
-      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacyCPUOnly" )
+      HitProducer = cms.string( "hltSiPixelRecHitsFromLegacySerialSync" )
     ),
     TIB = cms.PSet(  ),
     TID = cms.PSet(  ),
@@ -810,7 +810,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     MTEC = cms.PSet(  )
     )
 
-    process.hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly = cms.EDProducer( "L1MuonSeededTrackingRegionsEDProducer",
+    process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync = cms.EDProducer( "L1MuonSeededTrackingRegionsEDProducer",
     Propagator = cms.string( "SteppingHelixPropagatorAny" ),
     L1MinPt = cms.double( 0.0 ),
     L1MaxEta = cms.double( 2.5 ),
@@ -819,7 +819,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     SetMinPtEndcapTo = cms.double( 1.0 ),
     CentralBxOnly = cms.bool( True ),
     RegionPSet = cms.PSet(
-      vertexCollection = cms.InputTag( "hltTrimmedPixelVerticesCPUOnly" ),
+      vertexCollection = cms.InputTag( "hltTrimmedPixelVerticesSerialSync" ),
       deltaEtas = cms.vdouble( 0.175, 0.175, 0.175, 0.175 ),
       beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
       zErrorBeamSpot = cms.double( 15.0 ),
@@ -835,7 +835,7 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
       deltaPhis = cms.vdouble( 0.5, 0.4, 0.3, 0.15 ),
       whereToUseMeasurementTracker = cms.string( "ForSiStrips" ),
       originRadius = cms.double( 0.015 ),
-      measurementTrackerName = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly" ),
+      measurementTrackerName = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync" ),
       precise = cms.bool( True )
     ),
     ServiceParameters = cms.PSet(
@@ -845,21 +845,21 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     )
     )
 
-    process.hltIter3IterL3FromL1MuonPixelClusterCheckCPUOnly = cms.EDProducer( "ClusterCheckerEDProducer",
+    process.hltIter3IterL3FromL1MuonPixelClusterCheckSerialSync = cms.EDProducer( "ClusterCheckerEDProducer",
     doClusterCheck = cms.bool( False ),
     MaxNumberOfStripClusters = cms.uint32( 50000 ),
-    ClusterCollectionLabel = cms.InputTag( "hltMeasurementTrackerEventCPUOnly" ),
+    ClusterCollectionLabel = cms.InputTag( "hltMeasurementTrackerEventSerialSync" ),
     MaxNumberOfPixelClusters = cms.uint32( 40000 ),
     PixelClusterCollectionLabel = cms.InputTag( "hltSiPixelClustersLegacy" ),
     cut = cms.string( "" ),
     silentClusterCheck = cms.untracked.bool( False )
     )
 
-    process.hltIter3IterL3FromL1MuonPixelHitDoubletsCPUOnly = cms.EDProducer( "HitPairEDProducer",
-    seedingLayers = cms.InputTag( "hltIter3IterL3FromL1MuonPixelLayersAndRegionsCPUOnly" ),
-    trackingRegions = cms.InputTag( "hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly" ),
+    process.hltIter3IterL3FromL1MuonPixelHitDoubletsSerialSync = cms.EDProducer( "HitPairEDProducer",
+    seedingLayers = cms.InputTag( "hltIter3IterL3FromL1MuonPixelLayersAndRegionsSerialSync" ),
+    trackingRegions = cms.InputTag( "hltIter3IterL3FromL1MuonTrackingRegionsSerialSync" ),
     trackingRegionsSeedingLayers = cms.InputTag( "" ),
-    clusterCheck = cms.InputTag( "hltIter3IterL3FromL1MuonPixelClusterCheckCPUOnly" ),
+    clusterCheck = cms.InputTag( "hltIter3IterL3FromL1MuonPixelClusterCheckSerialSync" ),
     produceSeedingHitSets = cms.bool( True ),
     produceIntermediateHitDoublets = cms.bool( False ),
     maxElement = cms.uint32( 0 ),
@@ -868,8 +868,8 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     layerPairs = cms.vuint32( 0 )
     )
 
-    process.hltIter3IterL3FromL1MuonPixelSeedsCPUOnly = cms.EDProducer( "SeedCreatorFromRegionConsecutiveHitsEDProducer",
-    seedingHitSets = cms.InputTag( "hltIter3IterL3FromL1MuonPixelHitDoubletsCPUOnly" ),
+    process.hltIter3IterL3FromL1MuonPixelSeedsSerialSync = cms.EDProducer( "SeedCreatorFromRegionConsecutiveHitsEDProducer",
+    seedingHitSets = cms.InputTag( "hltIter3IterL3FromL1MuonPixelHitDoubletsSerialSync" ),
     propagator = cms.string( "PropagatorWithMaterialParabolicMf" ),
     SeedMomentumForBOFF = cms.double( 5.0 ),
     OriginTransverseErrorMultiplier = cms.double( 1.0 ),
@@ -880,14 +880,14 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     SeedComparitorPSet = cms.PSet(  ComponentName = cms.string( "none" ) )
     )
 
-    process.hltIter3IterL3FromL1MuonCkfTrackCandidatesCPUOnly = cms.EDProducer( "CkfTrackCandidateMaker",
+    process.hltIter3IterL3FromL1MuonCkfTrackCandidatesSerialSync = cms.EDProducer( "CkfTrackCandidateMaker",
     cleanTrajectoryAfterInOut = cms.bool( False ),
     doSeedingRegionRebuilding = cms.bool( False ),
     onlyPixelHitsForSeedCleaner = cms.bool( False ),
     reverseTrajectories = cms.bool( False ),
     useHitsSplitting = cms.bool( False ),
-    MeasurementTrackerEvent = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly" ),
-    src = cms.InputTag( "hltIter3IterL3FromL1MuonPixelSeedsCPUOnly" ),
+    MeasurementTrackerEvent = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync" ),
+    src = cms.InputTag( "hltIter3IterL3FromL1MuonPixelSeedsSerialSync" ),
     clustersToSkip = cms.InputTag( "" ),
     phase2clustersToSkip = cms.InputTag( "" ),
     TrajectoryBuilderPSet = cms.PSet(  refToPSet_ = cms.string( "HLTIter2GroupedCkfTrajectoryBuilderIT" ) ),
@@ -904,10 +904,10 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     maxSeedsBeforeCleaning = cms.uint32( 1000 )
     )
 
-    process.hltIter3IterL3FromL1MuonCtfWithMaterialTracksCPUOnly = cms.EDProducer( "TrackProducer",
+    process.hltIter3IterL3FromL1MuonCtfWithMaterialTracksSerialSync = cms.EDProducer( "TrackProducer",
     useSimpleMF = cms.bool( True ),
     SimpleMagneticField = cms.string( "ParabolicMf" ),
-    src = cms.InputTag( "hltIter3IterL3FromL1MuonCkfTrackCandidatesCPUOnly" ),
+    src = cms.InputTag( "hltIter3IterL3FromL1MuonCkfTrackCandidatesSerialSync" ),
     clusterRemovalInfo = cms.InputTag( "" ),
     beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
     Fitter = cms.string( "hltESPFittingSmootherIT" ),
@@ -920,13 +920,13 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     GeometricInnerState = cms.bool( True ),
     NavigationSchool = cms.string( "" ),
     MeasurementTracker = cms.string( "" ),
-    MeasurementTrackerEvent = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly" )
+    MeasurementTrackerEvent = cms.InputTag( "hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync" )
     )
 
-    process.hltIter3IterL3FromL1MuonTrackCutClassifierCPUOnly = cms.EDProducer( "TrackCutClassifier",
-    src = cms.InputTag( "hltIter3IterL3FromL1MuonCtfWithMaterialTracksCPUOnly" ),
+    process.hltIter3IterL3FromL1MuonTrackCutClassifierSerialSync = cms.EDProducer( "TrackCutClassifier",
+    src = cms.InputTag( "hltIter3IterL3FromL1MuonCtfWithMaterialTracksSerialSync" ),
     beamspot = cms.InputTag( "hltOnlineBeamSpot" ),
-    vertices = cms.InputTag( "hltTrimmedPixelVerticesCPUOnly" ),
+    vertices = cms.InputTag( "hltTrimmedPixelVerticesSerialSync" ),
     ignoreVertices = cms.bool( False ),
     qualityCuts = cms.vdouble( -0.7, 0.1, 0.7 ),
     mva = cms.PSet(
@@ -956,16 +956,16 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
     )
     )
 
-    process.hltIter3IterL3FromL1MuonTrackSelectionHighPurityCPUOnly = cms.EDProducer( "TrackCollectionFilterCloner",
-    originalSource = cms.InputTag( "hltIter3IterL3FromL1MuonCtfWithMaterialTracksCPUOnly" ),
-    originalMVAVals = cms.InputTag( 'hltIter3IterL3FromL1MuonTrackCutClassifierCPUOnly','MVAValues' ),
-    originalQualVals = cms.InputTag( 'hltIter3IterL3FromL1MuonTrackCutClassifierCPUOnly','QualityMasks' ),
+    process.hltIter3IterL3FromL1MuonTrackSelectionHighPuritySerialSync = cms.EDProducer( "TrackCollectionFilterCloner",
+    originalSource = cms.InputTag( "hltIter3IterL3FromL1MuonCtfWithMaterialTracksSerialSync" ),
+    originalMVAVals = cms.InputTag( 'hltIter3IterL3FromL1MuonTrackCutClassifierSerialSync','MVAValues' ),
+    originalQualVals = cms.InputTag( 'hltIter3IterL3FromL1MuonTrackCutClassifierSerialSync','QualityMasks' ),
     minQuality = cms.string( "highPurity" ),
     copyExtras = cms.untracked.bool( True ),
     copyTrajectories = cms.untracked.bool( False )
     )
 
-    process.hltIter03IterL3FromL1MuonMergedCPUOnly  = cms.EDProducer( "TrackListMerger",
+    process.hltIter03IterL3FromL1MuonMergedSerialSync  = cms.EDProducer( "TrackListMerger",
         ShareFrac = cms.double( 0.19 ),
         FoundHitBonus = cms.double( 5.0 ),
         LostHitPenalty = cms.double( 20.0 ),
@@ -973,10 +973,10 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
         Epsilon = cms.double( -0.001 ),
         MaxNormalizedChisq = cms.double( 1000.0 ),
         MinFound = cms.int32( 3 ),
-        TrackProducers = cms.VInputTag( 'hltIter0IterL3FromL1MuonTrackSelectionHighPurityCPUOnly','hltIter3IterL3FromL1MuonTrackSelectionHighPurityCPUOnly' ),
+        TrackProducers = cms.VInputTag( 'hltIter0IterL3FromL1MuonTrackSelectionHighPuritySerialSync','hltIter3IterL3FromL1MuonTrackSelectionHighPuritySerialSync' ),
         hasSelector = cms.vint32( 0, 0 ),
         indivShareFrac = cms.vdouble( 1.0, 1.0 ),
-        selectedTrackQuals = cms.VInputTag( 'hltIter0IterL3FromL1MuonTrackSelectionHighPurityCPUOnly','hltIter3IterL3FromL1MuonTrackSelectionHighPurityCPUOnly' ),
+        selectedTrackQuals = cms.VInputTag( 'hltIter0IterL3FromL1MuonTrackSelectionHighPuritySerialSync','hltIter3IterL3FromL1MuonTrackSelectionHighPuritySerialSync' ),
         setsToMerge = cms.VPSet(
           cms.PSet(  pQual = cms.bool( False ),
             tLists = cms.vint32( 0, 1 )
@@ -990,40 +990,40 @@ def enableDoubletRecoveryInIOFromL1CPUOnly(process):
         copyMVA = cms.bool( False )
     )
 
-    process.hltIterL3MuonAndMuonFromL1MergedCPUOnly.TrackProducers = cms.VInputTag( 'hltIterL3MuonMergedCPUOnly','hltIter03IterL3FromL1MuonMergedCPUOnly' )
-    process.hltIterL3MuonAndMuonFromL1MergedCPUOnly.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMergedCPUOnly','hltIter03IterL3FromL1MuonMergedCPUOnly' )
-    process.hltIterL3MuonsNoIDCPUOnly.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter03IterL3FromL1MuonMergedCPUOnly" )
+    process.hltIterL3MuonAndMuonFromL1MergedSerialSync.TrackProducers = cms.VInputTag( 'hltIterL3MuonMergedSerialSync','hltIter03IterL3FromL1MuonMergedSerialSync' )
+    process.hltIterL3MuonAndMuonFromL1MergedSerialSync.selectedTrackQuals = cms.VInputTag( 'hltIterL3MuonMergedSerialSync','hltIter03IterL3FromL1MuonMergedSerialSync' )
+    process.hltIterL3MuonsNoIDSerialSync.TrackExtractorPSet.inputTrackCollection = cms.InputTag( "hltIter03IterL3FromL1MuonMergedSerialSync" )
 
-    process.HLTIterativeTrackingIteration3ForIterL3FromL1MuonCPUOnly = cms.Sequence(
-        process.hltIter3IterL3FromL1MuonClustersRefRemovalCPUOnly +
-        process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventCPUOnly +
-        process.hltIter3IterL3FromL1MuonPixelLayersAndRegionsCPUOnly +
-        process.hltIter3IterL3FromL1MuonTrackingRegionsCPUOnly +
-        process.hltIter3IterL3FromL1MuonPixelClusterCheckCPUOnly +
-        process.hltIter3IterL3FromL1MuonPixelHitDoubletsCPUOnly +
-        process.hltIter3IterL3FromL1MuonPixelSeedsCPUOnly +
-        process.hltIter3IterL3FromL1MuonCkfTrackCandidatesCPUOnly +
-        process.hltIter3IterL3FromL1MuonCtfWithMaterialTracksCPUOnly +
-        process.hltIter3IterL3FromL1MuonTrackCutClassifierCPUOnly +
-        process.hltIter3IterL3FromL1MuonTrackSelectionHighPurityCPUOnly
+    process.HLTIterativeTrackingIteration3ForIterL3FromL1MuonSerialSync = cms.Sequence(
+        process.hltIter3IterL3FromL1MuonClustersRefRemovalSerialSync +
+        process.hltIter3IterL3FromL1MuonMaskedMeasurementTrackerEventSerialSync +
+        process.hltIter3IterL3FromL1MuonPixelLayersAndRegionsSerialSync +
+        process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync +
+        process.hltIter3IterL3FromL1MuonPixelClusterCheckSerialSync +
+        process.hltIter3IterL3FromL1MuonPixelHitDoubletsSerialSync +
+        process.hltIter3IterL3FromL1MuonPixelSeedsSerialSync +
+        process.hltIter3IterL3FromL1MuonCkfTrackCandidatesSerialSync +
+        process.hltIter3IterL3FromL1MuonCtfWithMaterialTracksSerialSync +
+        process.hltIter3IterL3FromL1MuonTrackCutClassifierSerialSync +
+        process.hltIter3IterL3FromL1MuonTrackSelectionHighPuritySerialSync
     )
 
-    process.HLTIterL3IOmuonFromL1TkCandidateCPUOnlySequence = cms.Sequence(
-        process.HLTRecopixelvertexingCPUOnlySequenceForIterL3FromL1Muon +
-        process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonCPUOnly +
-        process.HLTIterativeTrackingIteration3ForIterL3FromL1MuonCPUOnly
+    process.HLTIterL3IOmuonFromL1TkCandidateSequenceSerialSync = cms.Sequence(
+        process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonSerialSync +
+        process.HLTIterativeTrackingIteration0ForIterL3FromL1MuonSerialSync +
+        process.HLTIterativeTrackingIteration3ForIterL3FromL1MuonSerialSync
     )
 
-    process.HLTL3muonrecoNocandCPUOnlySequence = cms.Sequence(
-        process.HLTIterL3muonTkCandidateCPUOnlySequence +
-        process.hltIter03IterL3FromL1MuonMergedCPUOnly +
-        process.hltIterL3MuonMergedCPUOnly +
-        process.hltIterL3MuonAndMuonFromL1MergedCPUOnly +
-        process.hltIterL3GlbMuonCPUOnly +
-        process.hltIterL3MuonsNoIDCPUOnly +
-        process.hltIterL3MuonsCPUOnly +
-        process.hltL3MuonsIterL3LinksCPUOnly +
-        process.hltIterL3MuonTracksCPUOnly
+    process.HLTL3muonrecoNocandSequenceSerialSync = cms.Sequence(
+        process.HLTIterL3muonTkCandidateSequenceSerialSync +
+        process.hltIter03IterL3FromL1MuonMergedSerialSync +
+        process.hltIterL3MuonMergedSerialSync +
+        process.hltIterL3MuonAndMuonFromL1MergedSerialSync +
+        process.hltIterL3GlbMuonSerialSync +
+        process.hltIterL3MuonsNoIDSerialSync +
+        process.hltIterL3MuonsSerialSync +
+        process.hltL3MuonsIterL3LinksSerialSync +
+        process.hltIterL3MuonTracksSerialSync
     )
 
     return process
