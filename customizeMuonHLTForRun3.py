@@ -442,6 +442,75 @@ def enableChainingIOfromL1(process):
 
     return process
 
+def enableNewChainingIOfromL1(process):
+
+    ## Prepare Links, L3 MuonCandidates of (OI + IO(L2))
+    #process.hltIterL3MuonsFromL2LinksCombination = cms.EDProducer( "L3TrackLinksCombiner", # already in current HLT menu (possibly, leftover)
+    #  labels = cms.VInputTag( 'hltL3MuonsIterL3OI','hltL3MuonsIterL3IO' )
+    #)
+    process.hltIterL3MuonsFromL2 = cms.EDProducer( "L3TrackCombiner",
+      labels = cms.VInputTag( 'hltL3MuonsIterL3OI','hltL3MuonsIterL3IO' ) # HERE
+    )
+    process.hltIterL3MuonsFromL2Candidates = cms.EDProducer( "L3MuonCandidateProducer",
+      InputObjects = cms.InputTag( "hltIterL3MuonsFromL2" ), # HERE
+      InputLinksObjects = cms.InputTag( "hltIterL3MuonsFromL2LinksCombination" ), # HERE
+      MuonPtOption = cms.string( "Tracker" )
+    )
+
+    ## Select L2 matched to L3 MuonCandidates of (OI + IO(L2)), opposite logic with hltL2SelectorForL3IO
+    process.hltL2SelectorForL3IOFromL1 = cms.EDProducer( "HLTMuonL2SelectorForL3IOFromL1", # HERE
+      l2Src = cms.InputTag( 'hltL2Muons','UpdatedAtVtx' ),
+      l3OISrc = cms.InputTag( "hltIterL3MuonsFromL2Candidates" ), # HERE
+      InputLinks = cms.InputTag( "hltIterL3MuonsFromL2LinksCombination" ), # HERE
+      applyL3Filters = cms.bool( False ),
+      MinNhits = cms.int32( 1 ),
+      MaxNormalizedChi2 = cms.double( 20.0 ),
+      MinNmuonHits = cms.int32( 1 ),
+      MaxPtDifference = cms.double( 0.3 )
+    )
+    process.hltL2SelectorForL3IOFromL1Candidates = cms.EDProducer( "L2MuonCandidateProducer",
+      InputObjects = cms.InputTag( "hltL2SelectorForL3IOFromL1",'UpdatedAtVtx' ) # HERE
+    )
+
+    ## Select L1 not matched to the L2 Muons above
+    process.hltIterL3MuonL1MuonNoL2Selector = cms.EDProducer( "HLTL1MuonNoL2Selector",
+      InputObjects = cms.InputTag( 'hltGtStage2Digis','Muon' ),
+      L2CandTag = cms.InputTag( "hltL2SelectorForL3IOFromL1Candidates" ), # HERE
+      SeedMapTag = cms.InputTag( "hltL2SelectorForL3IOFromL1" ), # HERE
+      L1MinPt = cms.double( -1.0 ),
+      L1MaxEta = cms.double( 5.0 ),
+      L1MinQuality = cms.uint32( 7 ),
+      CentralBxOnly = cms.bool( True )
+    )
+
+    process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegions"):
+        process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+    process.HLTIterL3muonTkCandidateSequence = cms.Sequence(
+        process.HLTDoLocalPixelSequence +
+        process.HLTDoLocalStripSequence +
+        process.HLTIterL3OIAndIOFromL2muonTkCandidateSequence +
+        process.hltL1MuonsPt0 +
+        process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+        process.HLTIterL3IOmuonFromL1TkCandidateSequence
+    )
+
+    ## CPUOnly
+    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsSerialSync"):
+        process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+        process.HLTIterL3muonTkCandidateSequenceSerialSync = cms.Sequence(
+            process.HLTDoLocalPixelSequenceSerialSync +
+            process.HLTDoLocalStripSequenceSerialSync +
+            process.HLTIterL3OIAndIOFromL2muonTkCandidateSequenceSerialSync +
+            process.hltL1MuonsPt0 +
+            process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+            process.HLTIterL3IOmuonFromL1TkCandidateSequenceSerialSync
+        )
+
+    return process
+
 
 ### Iter3 in NoVtx
 def enableDoubletRecoveryInIOFromL1forNoVtx(process):
