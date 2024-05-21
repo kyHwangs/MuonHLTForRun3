@@ -457,26 +457,27 @@ def enableNewChainingIOfromL1(process):
       MuonPtOption = cms.string( "Tracker" )
     )
 
-    ## Select L2 matched to L3 MuonCandidates of (OI + IO(L2)), opposite logic with hltL2SelectorForL3IO
-    process.hltL2SelectorForL3IOFromL1 = cms.EDProducer( "HLTMuonL2SelectorForL3IOFromL1", # HERE
+    ## Select L2 matched to L3 MuonCandidates of (OI + IO(L2))
+    process.hltL2SelectorForL3IOFromL1 = cms.EDProducer( "HLTMuonL2SelectorForL3IO",
       l2Src = cms.InputTag( 'hltL2Muons','UpdatedAtVtx' ),
       l3OISrc = cms.InputTag( "hltIterL3MuonsFromL2Candidates" ), # HERE
       InputLinks = cms.InputTag( "hltIterL3MuonsFromL2LinksCombination" ), # HERE
       applyL3Filters = cms.bool( False ),
+      selectMatched = cms.bool ( True ), ### HERE !!!
       MinNhits = cms.int32( 1 ),
       MaxNormalizedChi2 = cms.double( 20.0 ),
       MinNmuonHits = cms.int32( 1 ),
       MaxPtDifference = cms.double( 0.3 )
     )
     process.hltL2SelectorForL3IOFromL1Candidates = cms.EDProducer( "L2MuonCandidateProducer",
-      InputObjects = cms.InputTag( "hltL2SelectorForL3IOFromL1",'UpdatedAtVtx' ) # HERE
+      InputObjects = cms.InputTag( "hltL2SelectorForL3IOFromL1" ) # HERE
     )
 
     ## Select L1 not matched to the L2 Muons above
     process.hltIterL3MuonL1MuonNoL2Selector = cms.EDProducer( "HLTL1MuonNoL2Selector",
       InputObjects = cms.InputTag( 'hltGtStage2Digis','Muon' ),
       L2CandTag = cms.InputTag( "hltL2SelectorForL3IOFromL1Candidates" ), # HERE
-      SeedMapTag = cms.InputTag( "hltL2SelectorForL3IOFromL1" ), # HERE
+      SeedMapTag = cms.InputTag( "hltL2Muons" ),
       L1MinPt = cms.double( -1.0 ),
       L1MaxEta = cms.double( 5.0 ),
       L1MinQuality = cms.uint32( 7 ),
@@ -486,6 +487,20 @@ def enableNewChainingIOfromL1(process):
     process.hltIterL3FromL1MuonPixelTracksTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
     if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegions"):
         process.hltIter3IterL3FromL1MuonTrackingRegions.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+
+    process.HLTIterL3OIAndIOFromL2muonTkCandidateSequence = cms.Sequence(
+        process.HLTIterL3OImuonTkCandidateSequence +
+        process.hltIterL3OIL3MuonsLinksCombination +
+        process.hltIterL3OIL3Muons +
+        process.hltIterL3OIL3MuonCandidates +
+        process.hltL2SelectorForL3IO +
+        process.HLTIterL3IOmuonTkCandidateSequence +
+        process.hltIterL3MuonsFromL2LinksCombination +
+        process.hltIterL3MuonsFromL2 + # HERE
+        process.hltIterL3MuonsFromL2Candidates + # HERE
+        process.hltL2SelectorForL3IOFromL1 + # HERE
+        process.hltL2SelectorForL3IOFromL1Candidates # HERE
+    )
 
     process.HLTIterL3muonTkCandidateSequence = cms.Sequence(
         process.HLTDoLocalPixelSequence +
