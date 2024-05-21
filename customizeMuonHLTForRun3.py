@@ -512,16 +512,107 @@ def enableNewChainingIOfromL1(process):
     )
 
     ## CPUOnly
-    if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsSerialSync"):
-        process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2Selector" )
+    if hasattr(process, "hltIterL3MuonsFromL2LinksCombinationSerialSync"):
+        process.hltIterL3MuonsFromL2SerialSync = cms.EDProducer( "L3TrackCombiner",
+          labels = cms.VInputTag( 'hltL3MuonsIterL3OISerialSync','hltL3MuonsIterL3IOSerialSync' )
+        )
+        process.hltIterL3MuonsFromL2CandidatesSerialSync = cms.EDProducer( "L3MuonCandidateProducer",
+          InputObjects = cms.InputTag( "hltIterL3MuonsFromL2SerialSync" ),
+          InputLinksObjects = cms.InputTag( "hltIterL3MuonsFromL2LinksCombinationSerialSync" ),
+          MuonPtOption = cms.string( "Tracker" )
+        )
+
+        process.hltL2SelectorForL3IOFromL1SerialSync = cms.EDProducer( "HLTMuonL2SelectorForL3IO",
+          l2Src = cms.InputTag( 'hltL2Muons','UpdatedAtVtx' ),
+          l3OISrc = cms.InputTag( "hltIterL3MuonsFromL2CandidatesSerialSync" ),
+          InputLinks = cms.InputTag( "hltIterL3MuonsFromL2LinksCombinationSerialSync" ),
+          applyL3Filters = cms.bool( False ),
+          selectMatched = cms.bool ( True ),
+          MinNhits = cms.int32( 1 ),
+          MaxNormalizedChi2 = cms.double( 20.0 ),
+          MinNmuonHits = cms.int32( 1 ),
+          MaxPtDifference = cms.double( 0.3 )
+        )
+        process.hltL2SelectorForL3IOFromL1CandidatesSerialSync = cms.EDProducer( "L2MuonCandidateProducer",
+          InputObjects = cms.InputTag( "hltL2SelectorForL3IOFromL1SerialSync" )
+        )
+
+        process.hltIterL3MuonL1MuonNoL2SelectorSerialSync = cms.EDProducer( "HLTL1MuonNoL2Selector",
+          InputObjects = cms.InputTag( 'hltGtStage2Digis','Muon' ),
+          L2CandTag = cms.InputTag( "hltL2SelectorForL3IOFromL1CandidatesSerialSync" ),
+          SeedMapTag = cms.InputTag( "hltL2Muons" ),
+          L1MinPt = cms.double( -1.0 ),
+          L1MaxEta = cms.double( 5.0 ),
+          L1MinQuality = cms.uint32( 7 ),
+          CentralBxOnly = cms.bool( True )
+        )
+
+        process.hltIterL3FromL1MuonPixelTracksTrackingRegionsSerialSync = cms.EDProducer("L1MuonSeededTrackingRegionsEDProducer",
+          CentralBxOnly = cms.bool( True ),
+          L1MaxEta = cms.double( 2.5 ),
+          L1MinPt = cms.double( 0.0 ),
+          L1MinQuality = cms.uint32( 7 ),
+          Propagator = cms.string('SteppingHelixPropagatorAny'),
+          RegionPSet = cms.PSet(
+            beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
+            deltaEtas = cms.vdouble( 0.35, 0.35, 0.35, 0.35 ),
+            deltaPhis = cms.vdouble( 1.0, 0.8, 0.6, 0.3 ),
+            input = cms.InputTag( "hltIterL3MuonL1MuonNoL2SelectorSerialSync" ), # HERE
+            maxNRegions = cms.int32( 5 ),
+            maxNVertices = cms.int32( 1 ),
+            measurementTrackerName = cms.InputTag( "" ),
+            mode = cms.string( 'BeamSpotSigma' ),
+            nSigmaZBeamSpot = cms.double( 4.0 ),
+            nSigmaZVertex = cms.double( 3.0 ),
+            originRadius = cms.double( 0.2 ),
+            precise = cms.bool( True ),
+            ptMin = cms.double( 0.0 ),
+            ptRanges = cms.vdouble( 0.0, 10.0, 15.0, 20.0, 1e+64 ),
+            searchOpt = cms.bool( False ),
+            vertexCollection = cms.InputTag( "notUsed" ),
+            whereToUseMeasurementTracker = cms.string( 'Never' ),
+            zErrorBeamSpot = cms.double( 24.2 ),
+            zErrorVetex = cms.double( 0.2 )
+          ),
+          ServiceParameters = cms.PSet(
+            Propagators = cms.untracked.vstring( 'SteppingHelixPropagatorAny' ),
+            RPCLayers = cms.bool( True ),
+            UseMuonNavigation = cms.untracked.bool( True )
+          ),
+          SetMinPtBarrelTo = cms.double( 3.5 ),
+          SetMinPtEndcapTo = cms.double( 1.0 )
+        )
+
+        if hasattr(process, "hltIter3IterL3FromL1MuonTrackingRegionsSerialSync"):
+          process.hltIter3IterL3FromL1MuonTrackingRegionsSerialSync.RegionPSet.input = cms.InputTag( "hltIterL3MuonL1MuonNoL2SelectorSerialSync" )
+
+        process.HLTIterL3OIAndIOFromL2muonTkCandidateSequenceSerialSync = cms.Sequence(
+            process.HLTIterL3OImuonTkCandidateSequenceSerialSync +
+            process.hltIterL3OIL3MuonsLinksCombinationSerialSync +
+            process.hltIterL3OIL3MuonsSerialSync +
+            process.hltIterL3OIL3MuonCandidatesSerialSync +
+            process.hltL2SelectorForL3IOSerialSync +
+            process.HLTIterL3IOmuonTkCandidateSequenceSerialSync +
+            process.hltIterL3MuonsFromL2LinksCombinationSerialSync +
+            process.hltIterL3MuonsFromL2SerialSync +
+            process.hltIterL3MuonsFromL2CandidatesSerialSync +
+            process.hltL2SelectorForL3IOFromL1SerialSync +
+            process.hltL2SelectorForL3IOFromL1CandidatesSerialSync
+        )
 
         process.HLTIterL3muonTkCandidateSequenceSerialSync = cms.Sequence(
             process.HLTDoLocalPixelSequenceSerialSync +
             process.HLTDoLocalStripSequenceSerialSync +
             process.HLTIterL3OIAndIOFromL2muonTkCandidateSequenceSerialSync +
             process.hltL1MuonsPt0 +
-            process.hltIterL3MuonL1MuonNoL2Selector + # HERE
+            process.hltIterL3MuonL1MuonNoL2SelectorSerialSync +
             process.HLTIterL3IOmuonFromL1TkCandidateSequenceSerialSync
+        )
+
+        process.HLTRecopixelvertexingSequenceForIterL3FromL1MuonSerialSync = cms.Sequence(
+            process.HLTRecopixelvertexingSequenceSerialSync +
+            process.hltIterL3FromL1MuonPixelTracksTrackingRegionsSerialSync +
+            process.hltPixelTracksInRegionL1SerialSync
         )
 
     return process
